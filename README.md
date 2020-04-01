@@ -46,12 +46,18 @@ TODO:
   [plug](https://github.com/andreyorst/plug.kak).
   This is used for rendering ANSI-colored text in Kakoune.
 
+- [tmux-option-kak-session](https://github.com/jbomanson/tmux-option-kak-session),
+  which can also be installed with
+  [plug](https://github.com/andreyorst/plug.kak).
+  This is used for determining which Kakoune session to connect to.
+
 ## Installation
 
 ### tmux_kak_copy_mode
 
-First, copy the executable `bin/tmux_kak_copy_mode` included in this repository
-to any directory on your PATH either manually, or let the included `Makefile`
+Once the above dependencies are installed, copy the executable
+`bin/tmux_kak_copy_mode` included in this repository to any directory on your
+PATH either manually, or let the included `Makefile`
 do that.
 
 For example, to install to /usr/local/bin:

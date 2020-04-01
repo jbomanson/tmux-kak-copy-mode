@@ -29,26 +29,12 @@ create_scratch_dir ()
     printf "%s\n" "$scratch_dir"
 }
 
-# List all kakoune sessions started within this tmux session.
-tmux_kak_sessions ()
+tmux_kak_session ()
 {
-    local dir="$scratch_dir/tmux_kak_sessions"
-    local SECRET=5fb4ba02b306c45aa8c472f1f11143f6
-    if ! test -d "$dir"; then
-        mkdir -p "$dir"
-        for kak_session in $(kak -l)
-        do
-            {
-                file="$dir/$kak_session"
-                printf "%s\n" "nop %sh{printf '%s\n' \"$SECRET\${TMUX}$SECRET\" >$file}" \
-                    | kak -p "$kak_session" &
-            } >/dev/null 2>&1 </dev/null
-        done
-        touch "$dir/empty_placeholder"
-        wait
-    fi
-    grep -l -F "$SECRET${TMUX}$SECRET" "$dir"/* \
-        | grep -o '[[:digit:]]\+$'
+    {
+        tmux     show-option -vw @kak_session ||
+            tmux show-option -v  @kak_session
+    } 2>/dev/null
 }
 
 gather_information ()
@@ -131,7 +117,7 @@ run_kak_here ()
     let kak_scroll_region_upper=scroll_region_upper+y_offset
     let kak_scroll_region_lower=scroll_region_lower+y_offset
 
-    kak_session="$(tmux_kak_sessions | head -n1)"
+    kak_session="$(tmux_kak_session)"
     if test -n "$kak_session"; then
         session_arguments=(-c "$kak_session")
     else
