@@ -1,0 +1,204 @@
+#! /bin/bash
+
+TMUX_KAK_COPY_MODE_DEBUG=""
+
+prompt_message="# Insert lines below to be sent back to the pane."
+
+scratch_dir=""
+
+clean_up_scratch_dir () {
+    code=$?
+    rm -rf "$scratch_dir"
+    exit $code
+}
+
+
+if test -n "$TMUX_KAK_COPY_MODE_DEBUG"; then
+    debug_echo () {
+        printf "%s\n" "# tmux_kak_copy_mode: $*"
+    }
+else
+    debug_echo () {
+        true
+    }
+fi
+
+create_scratch_dir ()
+{
+    scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}"/tmux_kak_copy_mode.XXXXXXXX)
+    printf "%s\n" "$scratch_dir"
+}
+
+# List all kakoune sessions started within this tmux session.
+tmux_kak_sessions ()
+{
+    local dir="$scratch_dir/tmux_kak_sessions"
+    local SECRET=5fb4ba02b306c45aa8c472f1f11143f6
+    if ! test -d "$dir"; then
+        mkdir -p "$dir"
+        for kak_session in $(kak -l)
+        do
+            {
+                file="$dir/$kak_session"
+                printf "%s\n" "nop %sh{printf '%s\n' \"$SECRET\${TMUX}$SECRET\" >$file}" \
+                    | kak -p "$kak_session" &
+            } >/dev/null 2>&1 </dev/null
+        done
+        touch "$dir/empty_placeholder"
+        wait
+    fi
+    grep -l -F "$SECRET${TMUX}$SECRET" "$dir"/* \
+        | grep -o '[[:digit:]]\+$'
+}
+
+gather_information ()
+{
+    local scratch_dir="$(create_scratch_dir)"
+    local content_file="$scratch_dir/content"
+    local metadata_file="$scratch_dir/metadata"
+
+    # Capture the specified tmux pane contents with escape sequences (-e)
+    # and remove all trailing whitespaces.
+    # Otherwise there will be too much whitespace.
+    tmux capture-pane -S- -E"$scroll_region_lower" -J -p -e "$@" \
+        | perl -pe "s/[ \t]+$//" \
+        >"$content_file"
+
+    {
+        scroll_region_lower="$(tmux display-message -p "#{scroll_region_lower}")"
+        tmux display-message -p "$(printf "#{pane_id}\n#{cursor_x}\n#{cursor_y}\n#{scroll_region_upper}\n#{scroll_region_lower}")"
+        debug_tmux_options gather_information
+        # NOTE: This is only for debugging
+        tmux_visible_lines="$(tmux capture-pane -J -p -e "$@" | grep -c "^")"
+        tmux_visible_lines="${tmux_visible_lines%% *}"
+        debug_echo "tmux_visible_lines: $tmux_visible_lines"
+    } >"$metadata_file"
+
+    printf "%s\n" "$scratch_dir"
+}
+
+debug_tmux_options ()
+{
+    context="$1"
+    shift
+    debug_echo "$context: scroll_region_upper: $(tmux display-message -p "$@" "#{scroll_region_upper}")"
+    debug_echo "$context: scroll_region_lower: $(tmux display-message -p "$@" "#{scroll_region_lower}")"
+    debug_echo "$context: pane_bottom: $(tmux display-message -p "$@" "#{pane_bottom}")"
+    debug_echo "$context: pane_top: $(tmux display-message -p "$@" "#{pane_top}")"
+    debug_echo "$context: cursor_x: $(tmux display-message -p "$@" "#{cursor_x}")"
+    debug_echo "$context: cursor_y: $(tmux display-message -p "$@" "#{cursor_y}")"
+    debug_echo "$context: history_limit: $(tmux display-message -p "$@" "#{history_limit}")"
+}
+
+run_kak_here ()
+{
+    scratch_dir="$1"; shift
+    trap clean_up_scratch_dir EXIT
+    local content_file="$scratch_dir/content"
+    local metadata_file="$scratch_dir/metadata"
+
+    arguments_to_temporary_tmux_pane=("$@")
+
+    mapfile -t <"$metadata_file"
+    set -- "${MAPFILE[@]}"
+    displaced_pane_id="$1"; shift
+    tmux_cursor_x="$1"; shift
+    tmux_cursor_y="$1"; shift
+    scroll_region_upper="$1"; shift
+    scroll_region_lower="$1"; shift
+
+    # NOTE: This is only for setting the cursor position
+    # NOTE: Sometimes this ends in a newline, sometimes not.
+    tmux_content_lines="$(grep -c "^" "$content_file")"
+    tmux_content_lines="${tmux_content_lines%% *}"
+
+    # Append some extra lines to the content file.
+    {
+        debug_echo "arguments_to_temporary_tmux_pane: ${arguments_to_temporary_tmux_pane[*]}"
+        # This seems informative, except for the cursor which is always 0.
+        debug_tmux_options here_temporary "${arguments_to_temporary_tmux_pane[@]}"
+        debug_echo "tmux_content_lines: $tmux_content_lines"
+        debug_echo "received tmux_cursor_x: $tmux_cursor_x"
+        debug_echo "received tmux_cursor_y: $tmux_cursor_y"
+        debug_echo "received scroll_region_upper: $scroll_region_upper"
+        debug_echo "received scroll_region_lower: $scroll_region_lower"
+        printf "%s\n" "$prompt_message"
+    } >>"$content_file"
+
+    let y_offset=tmux_content_lines-scroll_region_lower
+    let kak_x=tmux_cursor_x+1
+    let kak_y=tmux_cursor_y+y_offset
+    let kak_scroll_region_upper=scroll_region_upper+y_offset
+    let kak_scroll_region_lower=scroll_region_lower+y_offset
+
+    kak_session="$(tmux_kak_sessions | head -n1)"
+    if test -n "$kak_session"; then
+        session_arguments=(-c "$kak_session")
+    else
+        session_arguments=()
+    fi
+
+    kak \
+        "${session_arguments[@]}" \
+        -e "
+            try %(
+              ansi-render
+              try %(
+                  write
+                  execute-keys 'ge'
+                  # select $kak_scroll_region_upper.1,$kak_scroll_region_lower.1
+                  # execute-keys '<a-:>'
+                  select $kak_y.$kak_x,$kak_y.$kak_x
+                  # execute-keys vj
+              )
+              set-option buffer filetype tmux_kak_copy_mode
+            ) catch %(
+              edit!
+              execute-keys 'ge'
+              set-option buffer filetype tmux_kak_copy_mode
+              fail tmux_kak_copy_mode: failed to call ansi-render
+            )
+        " \
+        "$content_file"
+
+    if test -n "$kak_session"; then
+        printf "%s" "delete-buffer '$content_file'" | kak -p "$kak_session"
+    fi
+
+    response="$(grep -P -m1 -A 100000 "^\Q$prompt_message\E$" -- "$content_file" | tail -n+2)"
+    if test -n "$response"; then
+        printf -v response "%s\n" "$response"
+        tmux send-keys -l -t "$displaced_pane_id" "$response"
+    fi
+}
+
+run_kak_in_new_window ()
+{
+    pane_id="$(tmux display-message -p "#{pane_id}")"
+    new_name="tmux_kak_copy_mode ($(tmux display-message -p '#{pane_current_command}'))"
+    # NOTE: For some reason the behaviour changes if this is called directly
+    # and not as an argument to true.
+    true "$(tmux new-window -P -d -n "$new_name" "
+        tmux swap-pane -s '$pane_id' -t \"\$TMUX_PANE\"
+        '$0' here_with_info "$@" -t '$pane_id'
+        tmux swap-pane -s '$pane_id' -t \"\$TMUX_PANE\"
+    ")"
+}
+
+mode="$1"
+shift
+
+if test "$mode" = "here"; then
+    run_kak_here "$(gather_information)" "$@"
+elif test "$mode" = "here_with_info"; then
+    run_kak_here "$@"
+elif test "$mode" = "in_new_window"; then
+    run_kak_in_new_window "$(gather_information)"
+else
+    printf "%s\n" "usage:"
+    printf "%s\n" "tmux_kak_copy_mode here"
+    printf "%s\n" "tmux_kak_copy_mode here -t <some_pane_id>"
+    # NOTE: This is an undocumented implementation detail:
+    # printf "%s\n" "tmux_kak_copy_mode here_with_info <content_file> [-t <some_pane_id>]
+    printf "%s\n" "tmux_kak_copy_mode in_new_window"
+fi
