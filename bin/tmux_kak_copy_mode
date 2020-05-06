@@ -32,9 +32,9 @@ create_scratch_dir ()
 tmux_kak_session ()
 {
     {
-        tmux     show-option -vw @kak_session ||
-            tmux show-option -v  @kak_session
-    } 2>/dev/null
+        tmux show-option -vw @kak_info_sessions
+        tmux show-option -v  @kak_info_sessions
+    } | head -n1
 }
 
 gather_information ()

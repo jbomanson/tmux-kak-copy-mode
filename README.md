@@ -46,7 +46,7 @@ TODO:
   [plug](https://github.com/andreyorst/plug.kak).
   This is used for rendering ANSI-colored text in Kakoune.
 
-- [tmux-option-kak-session](https://github.com/jbomanson/tmux-option-kak-session),
+- [tmux-kak-info.kak](https://github.com/jbomanson/tmux-kak-info.kak),
   which can also be installed with
   [plug](https://github.com/andreyorst/plug.kak).
   This is used for determining which Kakoune session to connect to.
