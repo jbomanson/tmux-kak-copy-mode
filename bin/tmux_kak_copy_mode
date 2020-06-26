@@ -4,6 +4,18 @@ TMUX_KAK_COPY_MODE_DEBUG=""
 
 prompt_message="# Insert lines below to be sent back to the pane."
 
+# Capture the specified tmux pane contents with escape sequences (-e)
+# and remove all trailing whitespaces.
+# Otherwise there will be too much whitespace.
+#
+# Usage:
+#   capture_pane -t <pane_id>
+function capture_pane ()
+{
+    tmux capture-pane -S- -E"$scroll_region_lower" -J -p -e "$@" \
+        | perl -pe "s/[ \t]+$//"
+}
+
 scratch_dir=""
 
 clean_up_scratch_dir () {
@@ -43,12 +55,7 @@ gather_information ()
     local content_file="$scratch_dir/content"
     local metadata_file="$scratch_dir/metadata"
 
-    # Capture the specified tmux pane contents with escape sequences (-e)
-    # and remove all trailing whitespaces.
-    # Otherwise there will be too much whitespace.
-    tmux capture-pane -S- -E"$scroll_region_lower" -J -p -e "$@" \
-        | perl -pe "s/[ \t]+$//" \
-        >"$content_file"
+    capture_pane >"$content_file"
 
     {
         scroll_region_lower="$(tmux display-message -p "#{scroll_region_lower}")"
@@ -138,10 +145,17 @@ run_kak_here ()
                   # execute-keys vj
               )
               nop %sh(
+                  tmux set-option -p @tmux_kak_copy_mode_kak_buffile \
+                      \"\$kak_buffile\"
                   tmux set-option -p @tmux_kak_copy_mode_kak_client \
                       \"\$kak_client\"
+                  tmux set-option -p @tmux_kak_copy_mode_kak_session \
+                      \"\$kak_session\"
               )
               set-option buffer filetype tmux_kak_copy_mode
+              declare-option str tmux_kak_copy_mode_displaced_pane_id
+              set-option buffer tmux_kak_copy_mode_displaced_pane_id \
+                  '$displaced_pane_id'
             ) catch %(
               edit!
               execute-keys 'ge'
@@ -151,7 +165,9 @@ run_kak_here ()
         " \
         "$content_file"
 
+    tmux set-option -pu @tmux_kak_copy_mode_kak_buffile
     tmux set-option -pu @tmux_kak_copy_mode_kak_client
+    tmux set-option -pu @tmux_kak_copy_mode_kak_session
 
     if test -n "$kak_session"; then
         printf "%s" "delete-buffer '$content_file'" | kak -p "$kak_session"
@@ -179,9 +195,29 @@ run_kak_in_new_window ()
 
 refresh_kak_or ()
 {
-    local client="$(tmux show-options -pqv @tmux_kak_copy_mode_kak_client)"
-    if test "$client"; then
-        tmux display-message "Aborting detected nesting attempt"
+    local buffile="$(tmux show-options -pqv @tmux_kak_copy_mode_kak_buffile)"
+    if test "$buffile"; then
+        local client="$(tmux show-options -pqv @tmux_kak_copy_mode_kak_client)"
+        local session="$(tmux show-options -pqv @tmux_kak_copy_mode_kak_session)"
+        printf "%s" "evaluate-commands %(
+            evaluate-commands -client '$client' %(
+                buffer '$buffile'
+                nop %sh(
+                    tmux_kak_copy_mode capture_pane \
+                      -t \"\$kak_opt_tmux_kak_copy_mode_displaced_pane_id\" \
+                      >'$buffile'
+                )
+                ansi-clear
+                edit!
+                try %(
+                    ansi-render
+                    try %(write)
+                ) catch %(
+                    edit!
+                    fail tmux_kak_copy_mode: failed to call ansi-render
+                )
+            )
+        )" | kak -p "$session"
     else
         "$@"
     fi
@@ -190,7 +226,9 @@ refresh_kak_or ()
 mode="$1"
 shift
 
-if test "$mode" = "here"; then
+if test "$mode" = "capture_pane"; then
+    capture_pane "$@"
+elif test "$mode" = "here"; then
     run_kak_here "$(gather_information)" "$@"
 elif test "$mode" = "here_with_info"; then
     run_kak_here "$@"
@@ -205,6 +243,6 @@ else
     printf "%s\n" "tmux_kak_copy_mode here"
     printf "%s\n" "tmux_kak_copy_mode here -t <some_pane_id>"
     # NOTE: This is an undocumented implementation detail:
-    # printf "%s\n" "tmux_kak_copy_mode here_with_info <content_file> [-t <some_pane_id>]
+    # printf "%s\n" "tmux_kak_copy_mode here_with_info <scratch_dir> [-t <some_pane_id>]
     printf "%s\n" "tmux_kak_copy_mode in_new_window"
 fi
