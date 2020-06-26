@@ -137,6 +137,10 @@ run_kak_here ()
                   select $kak_y.$kak_x,$kak_y.$kak_x
                   # execute-keys vj
               )
+              nop %sh(
+                  tmux set-option -p @tmux_kak_copy_mode_kak_client \
+                      \"\$kak_client\"
+              )
               set-option buffer filetype tmux_kak_copy_mode
             ) catch %(
               edit!
@@ -146,6 +150,8 @@ run_kak_here ()
             )
         " \
         "$content_file"
+
+    tmux set-option -pu @tmux_kak_copy_mode_kak_client
 
     if test -n "$kak_session"; then
         printf "%s" "delete-buffer '$content_file'" | kak -p "$kak_session"
@@ -171,6 +177,16 @@ run_kak_in_new_window ()
     ")"
 }
 
+refresh_kak_or ()
+{
+    local client="$(tmux show-options -pqv @tmux_kak_copy_mode_kak_client)"
+    if test "$client"; then
+        tmux display-message "Aborting detected nesting attempt"
+    else
+        "$@"
+    fi
+}
+
 mode="$1"
 shift
 
@@ -179,7 +195,11 @@ if test "$mode" = "here"; then
 elif test "$mode" = "here_with_info"; then
     run_kak_here "$@"
 elif test "$mode" = "in_new_window"; then
-    run_kak_in_new_window "$(gather_information)"
+    function callback ()
+    {
+        run_kak_in_new_window "$(gather_information)"
+    }
+    refresh_kak_or callback
 else
     printf "%s\n" "usage:"
     printf "%s\n" "tmux_kak_copy_mode here"
