@@ -9,8 +9,8 @@ prompt_message="# Insert lines below to be sent back to the pane."
 # Otherwise there will be too much whitespace.
 #
 # Usage:
-#   capture_pane -t <pane_id>
-function capture_pane ()
+#   private_capture_pane -t <pane_id>
+function private_capture_pane ()
 {
     tmux capture-pane -S- -E"$scroll_region_lower" -J -p -e "$@" \
         | perl -pe "s/[ \t]+$//"
@@ -57,7 +57,7 @@ gather_information ()
 
     test -d "$info_dir" || mkdir "$info_dir"
 
-    capture_pane >"$content_file"
+    private_capture_pane >"$content_file"
 
     {
         scroll_region_lower="$(tmux display-message -p "#{scroll_region_lower}")"
@@ -203,7 +203,7 @@ private_in_new_window_callback ()
     # Pass a sub directory of scratch_dir with gathered information in it because:
     # - here-with_info will remove its argument directory afterward and
     # - we do not want scratch_dir to be removed until the end of this file.
-    "$0" here_with_info "$scratch_dir/sub" -t "$calling_pane_id" 2>"$stderr_file"
+    "$0" private_here_with_info "$scratch_dir/sub" -t "$calling_pane_id" 2>"$stderr_file"
     local exit_status="$?"
     if test "$exit_status" -ne 0 -o -s "$stderr_file"; then
         echo "Got some kind of an error"
@@ -224,7 +224,7 @@ refresh_kak_or ()
             evaluate-commands -client '$client' %(
                 buffer '$buffile'
                 nop %sh(
-                    tmux_kak_copy_mode capture_pane \
+                    tmux_kak_copy_mode private_capture_pane \
                       -t \"\$kak_opt_tmux_kak_copy_mode_displaced_pane_id\" \
                       >'$buffile'
                 )
@@ -247,14 +247,14 @@ refresh_kak_or ()
 mode="$1"
 shift
 
-if test "$mode" = "capture_pane"; then
-    capture_pane "$@"
-elif test "$mode" = "here"; then
+if test "$mode" = "here"; then
     run_kak_here "$(gather_information "$(create_scratch_dir)")" "$@"
-elif test "$mode" = "here_with_info"; then
-    run_kak_here "$@"
 elif test "$mode" = "in_new_window"; then
     refresh_kak_or run_kak_in_new_window
+elif test "$mode" = "private_capture_pane"; then
+    private_capture_pane "$@"
+elif test "$mode" = "private_here_with_info"; then
+    run_kak_here "$@"
 elif test "$mode" = "private_in_new_window_callback"; then
     private_in_new_window_callback "$@"
 else
@@ -262,6 +262,6 @@ else
     printf "%s\n" "tmux_kak_copy_mode here"
     printf "%s\n" "tmux_kak_copy_mode here -t <some_pane_id>"
     # NOTE: This is an undocumented implementation detail:
-    # printf "%s\n" "tmux_kak_copy_mode here_with_info <scratch_dir> [-t <some_pane_id>]
+    # printf "%s\n" "tmux_kak_copy_mode private_here_with_info <scratch_dir> [-t <some_pane_id>]
     printf "%s\n" "tmux_kak_copy_mode in_new_window"
 fi
