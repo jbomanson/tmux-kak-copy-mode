@@ -51,9 +51,11 @@ tmux_kak_session ()
 
 gather_information ()
 {
-    local scratch_dir="$(create_scratch_dir)"
-    local content_file="$scratch_dir/content"
-    local metadata_file="$scratch_dir/metadata"
+    local info_dir="$1"
+    local content_file="$info_dir/content"
+    local metadata_file="$info_dir/metadata"
+
+    test -d "$info_dir" || mkdir "$info_dir"
 
     capture_pane >"$content_file"
 
@@ -66,8 +68,6 @@ gather_information ()
         tmux_visible_lines="${tmux_visible_lines%% *}"
         debug_echo "tmux_visible_lines: $tmux_visible_lines"
     } >"$metadata_file"
-
-    printf "%s\n" "$scratch_dir"
 }
 
 debug_tmux_options ()
@@ -182,15 +182,36 @@ run_kak_here ()
 
 run_kak_in_new_window ()
 {
-    pane_id="$(tmux display-message -p "#{pane_id}")"
-    new_name="tmux_kak_copy_mode ($(tmux display-message -p '#{pane_current_command}'))"
-    # NOTE: For some reason the behaviour changes if this is called directly
-    # and not as an argument to true.
-    true "$(tmux new-window -P -d -n "$new_name" "
-        tmux swap-pane -s '$pane_id' -t \"\$TMUX_PANE\"
-        '$0' here_with_info "$@" -t '$pane_id'
-        tmux swap-pane -s '$pane_id' -t \"\$TMUX_PANE\"
-    ")"
+    local scratch_dir="$(create_scratch_dir)"
+    local calling_pane_id="$(tmux display-message -p "#{pane_id}")"
+    local new_name="tmux_kak_copy_mode ($(tmux display-message -p '#{pane_current_command}'))"
+    gather_information "$scratch_dir/sub"
+    tmux new-window -d -n "$new_name" \
+        "$0" private_in_new_window_callback "$scratch_dir" "$calling_pane_id"
+    # The above tmux command returns immediately without waiting for the
+    # callback to finish.
+    # In fact, anything else would be disastrous if run_kak_in_new_window is being
+    # called from a tmux key binding because tmux would then get stuck.
+}
+
+private_in_new_window_callback ()
+{
+    local scratch_dir="$1"; shift
+    local calling_pane_id="$1"; shift
+    local stderr_file="$scratch_dir/new_window.stderr"
+    tmux swap-pane -s "$calling_pane_id" -t "$TMUX_PANE"
+    # Pass a sub directory of scratch_dir with gathered information in it because:
+    # - here-with_info will remove its argument directory afterward and
+    # - we do not want scratch_dir to be removed until the end of this file.
+    "$0" here_with_info "$scratch_dir/sub" -t "$calling_pane_id" 2>"$stderr_file"
+    local exit_status="$?"
+    if test "$exit_status" -ne 0 -o -s "$stderr_file"; then
+        echo "Got some kind of an error"
+        printf "%s\n" "tmux_kak_copy_mode: exit status: $exit_status" >>"$stderr_file"
+        env SHELL="/bin/bash" tmux run-shell -t "$calling_pane_id" "cat '$stderr_file'"
+    fi
+    tmux swap-pane -s "$calling_pane_id" -t "$TMUX_PANE"
+    clean_up_scratch_dir
 }
 
 refresh_kak_or ()
@@ -229,15 +250,13 @@ shift
 if test "$mode" = "capture_pane"; then
     capture_pane "$@"
 elif test "$mode" = "here"; then
-    run_kak_here "$(gather_information)" "$@"
+    run_kak_here "$(gather_information "$(create_scratch_dir)")" "$@"
 elif test "$mode" = "here_with_info"; then
     run_kak_here "$@"
 elif test "$mode" = "in_new_window"; then
-    function callback ()
-    {
-        run_kak_in_new_window "$(gather_information)"
-    }
-    refresh_kak_or callback
+    refresh_kak_or run_kak_in_new_window
+elif test "$mode" = "private_in_new_window_callback"; then
+    private_in_new_window_callback "$@"
 else
     printf "%s\n" "usage:"
     printf "%s\n" "tmux_kak_copy_mode here"
