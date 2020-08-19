@@ -28,9 +28,13 @@ export PATH
 SHELL="/bin/sh"
 export SHELL
 
+# Setup for kakoune.
+XDG_RUNTIME_DIR="$test_root/xdg_runtime_dir"
+mkdir "$XDG_RUNTIME_DIR"
+
 test_clean_up () {
     code=$?
-    rmdir --ignore-fail-on-non-empty "$test_root/home"
+    rmdir --ignore-fail-on-non-empty "$HOME" "$XDG_RUNTIME_DIR"
     tmux kill-session -t "=$test_session"
     exit $code
 }
