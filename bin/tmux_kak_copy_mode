@@ -60,14 +60,18 @@ gather_information ()
     private_capture_pane >"$content_file"
 
     {
+        # Serialize some tmux properties to be read later in run_kak_here.
         scroll_region_lower="$(tmux display-message -p "#{scroll_region_lower}")"
-        tmux display-message -p "$(printf "#{pane_id}\n#{cursor_x}\n#{cursor_y}\n#{scroll_region_upper}\n#{scroll_region_lower}")"
+        tmux display-message -p "$(printf "#{pane_id}\n#{cursor_x}\n#{cursor_y}\n#{scroll_region_lower}")"
+    } >"$metadata_file"
+
+    if test -n "$TMUX_KAK_COPY_MODE_DEBUG"; then
+        # Serialize some optional debug information as well.
         debug_tmux_options gather_information
-        # NOTE: This is only for debugging
         tmux_visible_lines="$(tmux capture-pane -J -p -e "$@" | grep -c "^")"
         tmux_visible_lines="${tmux_visible_lines%% *}"
         debug_echo "tmux_visible_lines: $tmux_visible_lines"
-    } >"$metadata_file"
+    fi >>"$content_file"
 }
 
 debug_tmux_options ()
@@ -105,14 +109,15 @@ run_kak_here ()
 
     # Append some extra lines to the content file.
     {
-        debug_echo "arguments_to_temporary_tmux_pane: ${arguments_to_temporary_tmux_pane[*]}"
-        # This seems informative, except for the cursor which is always 0.
-        debug_tmux_options here_temporary "${arguments_to_temporary_tmux_pane[@]}"
-        debug_echo "tmux_content_lines: $tmux_content_lines"
-        debug_echo "received tmux_cursor_x: $tmux_cursor_x"
-        debug_echo "received tmux_cursor_y: $tmux_cursor_y"
-        debug_echo "received scroll_region_upper: $scroll_region_upper"
-        debug_echo "received scroll_region_lower: $scroll_region_lower"
+        if test -n "$TMUX_KAK_COPY_MODE_DEBUG"; then
+            debug_echo "arguments_to_temporary_tmux_pane: ${arguments_to_temporary_tmux_pane[*]}"
+            # This seems informative, except for the cursor which is always 0.
+            debug_tmux_options here_temporary "${arguments_to_temporary_tmux_pane[@]}"
+            debug_echo "tmux_content_lines: $tmux_content_lines"
+            debug_echo "received tmux_cursor_x: $tmux_cursor_x"
+            debug_echo "received tmux_cursor_y: $tmux_cursor_y"
+            debug_echo "received scroll_region_lower: $scroll_region_lower"
+        fi
         printf "%s\n" "$prompt_message"
     } >>"$content_file"
 
