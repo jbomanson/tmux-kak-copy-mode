@@ -31,7 +31,7 @@ export SHELL
 test_clean_up () {
     code=$?
     rmdir --ignore-fail-on-non-empty "$test_root/home"
-    # tmux kill-server
+    tmux kill-session -t "=$test_session"
     exit $code
 }
 
