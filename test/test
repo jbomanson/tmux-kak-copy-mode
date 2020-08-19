@@ -1,0 +1,340 @@
+#! /bin/bash
+
+set -o errexit
+
+#===============================================================================
+#				Colors
+#===============================================================================
+
+# https://en.wikipedia.org/wiki/ANSI_escape_code
+if test -t 1; then
+    color_when=always
+    prefix='\033['
+    suffix='m'
+    printf -v black        "%s" "$prefix"'0;30'"$suffix"
+    printf -v red          "%s" "$prefix"'0;31'"$suffix"
+    printf -v green        "%s" "$prefix"'0;32'"$suffix"
+    printf -v brown        "%s" "$prefix"'0;33'"$suffix"
+    printf -v blue         "%s" "$prefix"'0;34'"$suffix"
+    printf -v purple       "%s" "$prefix"'0;35'"$suffix"
+    printf -v cyan         "%s" "$prefix"'0;36'"$suffix"
+    printf -v light_gray   "%s" "$prefix"'0;37'"$suffix"
+    printf -v dark_gray    "%s" "$prefix"'1;30'"$suffix"
+    printf -v light_red    "%s" "$prefix"'1;31'"$suffix"
+    printf -v light_green  "%s" "$prefix"'1;32'"$suffix"
+    printf -v yellow       "%s" "$prefix"'1;33'"$suffix"
+    printf -v light_blue   "%s" "$prefix"'1;34'"$suffix"
+    printf -v light_purple "%s" "$prefix"'1;35'"$suffix"
+    printf -v light_cyan   "%s" "$prefix"'1;36'"$suffix"
+    printf -v white        "%s" "$prefix"'1;37'"$suffix"
+
+    printf -v nc           "%s" "$prefix"'0'"$suffix"
+    printf -v bold         "%s" "$prefix"'1'"$suffix"
+else
+    color_when=never
+fi
+
+#===============================================================================
+#		Set up a scratch directory
+#===============================================================================
+
+scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}/tmux_kak_copy_mode_test.XXXXXXXX")
+
+clean_up () {
+    code=$?
+    rm -rf "$scratch_dir"
+    exit $code
+}
+
+trap clean_up EXIT
+
+#===============================================================================
+#
+#===============================================================================
+
+diff_cmd=(diff --color="$color_when" --unified=10 --new-file)
+
+test_dir="$( ( cd "${0%/*}"; pwd ) )/case"
+
+test_name_pattern="*.sh"
+
+scratch_working_root="$scratch_dir/working"
+mkdir "$scratch_working_root"
+
+scratch_extra_dir="$scratch_dir/extra"
+mkdir "$scratch_extra_dir"
+
+scratch_misc_dir="$scratch_dir/misc"
+mkdir "$scratch_misc_dir"
+
+failure_location_log="$scratch_extra_dir/failure_location_log"
+touch "$failure_location_log"
+
+failure_file_log="$scratch_extra_dir/failure_file_log"
+touch "$failure_file_log"
+
+# Calls a given command for each known test example, passing the name of the
+# test using the global variable `test_name`.
+function for_each_test_case ()
+{
+    for test_name in "${examples[@]}";
+    do
+        "$@";
+    done
+}
+
+# Runs a test case as a subprocess in a dedicated temporary directory and #
+# collects the resulting standard output and error streams in files for later
+# analysis.
+# This is intended to be called via `for_each_test_case`.
+function run_test_case ()
+{
+    # - Run the named test as a bash script.
+    # - Capture the standard output and error streams of the script in files
+    #   that are later moved inside the output directory.
+    (
+        mkdir "$scratch_working_root/$test_name"
+        cd "$scratch_working_root/$test_name"
+        bash "$test_dir/$test_name"
+    ) >"$scratch_extra_dir/$test_name.stdout" \
+        2>"$scratch_extra_dir/$test_name.stderr" \
+        </dev/null \
+        &
+}
+
+function big_echo ()
+{
+    echo
+    echo -e "\t$*"
+    echo
+}
+
+# Pretty prints any differences in the permissions of two files.
+function permission_diff ()
+{
+    local p1="$(stat -c '%A' "$1" 2>/dev/null)"
+    local p2="$(stat -c '%A' "$2" 2>/dev/null)"
+    if test "$p1" = "$p2"; then
+        true
+    else
+        echo -e "$bold--- expected $2 permissions"
+        echo -e "$bold+++ actual   $2 permissions"
+        test "$p1" && echo -e "$red+$p1"
+        test "$p2" && echo -e "$green+$p2"
+        echo -en "$nc"
+    fi
+}
+
+# Evaluates a command on a file and upon a nonzero exit status presents the
+# standard output and error of the command together with the file contents.
+function diff_like_command_check ()
+{
+    local assert_command="$1"
+    local file="$2"
+    local hash="$(echo "$file" | sha1sum)"
+    hash="${hash%% *}"
+    if ! eval "$assert_command \"\$file\"" \
+        >"$scratch_misc_dir/$hash.stdout" \
+        2>"$scratch_misc_dir/$hash.stderr"
+    then
+        echo -e "${bold}standard output of $assert_command $file$nc"
+        awk -v p="  " '{print p $0}' "$scratch_misc_dir/$hash.stdout"
+        echo -e "${bold}standard error  of $assert_command $file$nc"
+        awk -v p="  " '{print p $0}' "$scratch_misc_dir/$hash.stderr"
+        echo -e "${bold}actual $file$nc"
+        awk -v p="  " '{print p $0}' "$file"
+    fi
+}
+
+# Given two arguments, calls diff_like_command_check if the first argument begins
+# with "assert" and otherwise calls regular diff.
+function smart_diff ()
+{
+    local header="$(head -n1 "$1")"
+    local assert_command="${header#assert }"
+    if test "$header" != "$assert_command"; then
+        diff_like_command_check "$assert_command" "$2"
+    else
+        "${diff_cmd[@]}" --label "expected $2" --label "actual   $2" "$1" "$2" || true
+    fi
+}
+
+# A convenience function to diff both the permissions and contents of two files.
+function diff_with_permissions ()
+{
+    local pdiff="$(permission_diff "$1" "$2")"
+    local fdiff="$(smart_diff  "$1" "$2")"
+    test "$pdiff" && echo "$pdiff"
+    test "$fdiff" && echo "$fdiff"
+}
+
+function with_output_format ()
+{
+    local output_file output_dir
+    if test "$output_format"; then
+        printf -v output_file "$output_format" "$test_name"
+        output_dir="$(dirname "$output_file")"
+        if ! test -d "$output_dir"; then
+            echo "test: No output directory: '$output_dir'"
+            exit 1
+        fi >&2
+        "$@" >"$output_file"
+        cat "$output_file"
+    else
+        "$@"
+    fi
+}
+
+# Analyzes the standard output, standard error, and expected output files of
+# a previously ran test case.
+# This is intended to be called via `for_each_test_case` after a respective
+# run_test_case call.
+function analyze_test_case ()
+{
+    local failure
+    local expected_file
+    local actual_file
+    local diff
+    local pdiff
+    pushd "$scratch_working_root" >/dev/null
+    mv "$scratch_extra_dir/$test_name.stdout" "$test_name/stdout"
+    mv "$scratch_extra_dir/$test_name.stderr" "$test_name/stderr"
+    touch "$test_name/stdout.expected"
+    touch "$test_name/stderr.expected"
+    while read -r expected_file
+    do
+        actual_file="${expected_file/.expected/}"
+        diff="$(diff_with_permissions "$expected_file" "$actual_file" || true)"
+        test "$diff" || continue
+        if ! test "$failure"; then
+            echo
+            echo -e "\t$red$test_name$nc"
+            echo
+        fi
+        failure=1
+        echo "$diff"
+        # Look for the line in $test_name that created the failed expectation.
+        grep --fixed-strings --line-number --with-filename --max-count 1 \
+            "${expected_file##*/}" \
+            "$test_dir/$test_name" \
+            >>"$failure_location_log" \
+            || true
+    done < <(find "$test_name" -name "*.expected")
+    if test "$failure"; then
+        echo "$test_name" >>"$failure_file_log"
+    fi
+    popd >/dev/null
+}
+
+# A helper method to simplify the output of tree so that the output is nicer
+# to diff.
+function postprocess_tree ()
+{
+    awk '{
+        match($0, /^( *[|`-])*/)
+        p = substr($0, 1, RLENGTH)
+        gsub(/./, " ", p)
+        print p substr($0 , RLENGTH + 1)
+    }'
+}
+
+# Analyzes and presents the file tree of all test output files.
+function analyze_tree ()
+{
+    local t="$scratch_extra_dir/tree"
+    cd "$scratch_working_root"
+    tree --charset "" --noreport -p -a -I ".git" -P "*.expected" --prune | sed -r 's/\.expected//' | postprocess_tree >"$t.expected"
+    tree --charset "" --noreport -p -a -I ".git|*.expected" | postprocess_tree >"$t.actual"
+    "${diff_cmd[@]}" --label "expected tree" --label "actual   tree" \
+        "$t.expected" "$t.actual" >"$t.diff" || true
+}
+
+# Summarizes all analyses made previously via analyze_test_case.
+function present ()
+{
+    if test "${#failures[@]}" -eq 0; then
+        result_color="$green"
+    else
+        result_color="$red"
+    fi
+
+    if test -s "$failure_location_log"; then
+        echo
+        echo -e "\t${red}Failure Locations${nc}"
+        echo
+        cat "$failure_location_log"
+    fi
+
+    echo
+    echo -e "\t${result_color}Summary${nc}"
+    echo
+
+    cat "$scratch_extra_dir/tree.diff"
+    echo
+
+    printf                                                      \
+        "$result_color%d examples, %d failures$nc\n"            \
+        "${#examples[@]}"                                       \
+        "${#failures[@]}"
+}
+
+function usage ()
+{
+    echo "usage: ${0##*/} [<regex>]"
+}
+
+while test "$1"
+do
+    case "$1" in
+    --output_format=*)
+        output_format="${1#*=}"
+        if test "${output_format#/}" = "$output_format"; then
+            echo "test: Expected --output_format to specify absolute paths," \
+                "got '$output_format'"
+            exit 1
+        fi
+        ;;
+    --*)
+        echo "test: Unknown option '$1'"
+        usage
+        exit 1
+        ;;
+    *)
+        break
+        ;;
+    esac
+    shift
+done >&2
+
+if test $# -gt 1; then
+    usage
+    exit 1
+fi >&2
+
+test_case_regex="${1:-.}"
+
+mapfile -t examples < <(
+    find "$test_dir" \
+    -name "$test_name_pattern" \
+    -regextype egrep \
+    -iregex ".*($test_case_regex).*" \
+    -printf "%f\n"
+)
+
+for_each_test_case with_output_format true
+
+for_each_test_case run_test_case
+
+wait
+
+cd "$scratch_working_root"
+
+for_each_test_case with_output_format analyze_test_case
+mapfile -t failures < "$failure_file_log"
+
+analyze_tree
+
+present
+
+# Exit successfully if there are no errors.
+test "${#failures[@]}" -eq 0

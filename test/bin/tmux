@@ -1,0 +1,11 @@
+#! /bin/bash
+
+# A tmux wrapper that uses test specific tmux configuration and socket files.
+# A wrapper binary is preferrable to a bash function or an alias in tests because a wrapper binary affects also
+# the tmux binary used by tmux_kak_copy_mode.
+
+# See test/lib/prelude.sh
+test_root="$TMUX_KAK_COPY_MODE_TEST_ROOT"
+PATH="$TMUX_KAK_COPY_MODE_TEST_ORIGINAL_PATH"
+touch "$test_root/.tmux.conf"
+exec tmux -f "$test_root/.tmux.conf" -S "$test_root/.tmux-socket" "$@"
