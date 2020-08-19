@@ -28,15 +28,42 @@ export PATH
 SHELL="/bin/sh"
 export SHELL
 
-# Setup for kakoune.
+# Set the path to kakoune user session sockets.
 XDG_RUNTIME_DIR="$test_root/xdg_runtime_dir"
+export XDG_RUNTIME_DIR
 mkdir "$XDG_RUNTIME_DIR"
+
+# See KAKOUNE_CONFIG_DIR.
+XDG_CONFIG_HOME="$test_root/.config"
+export XDG_CONFIG_HOME
+mkdir "$XDG_CONFIG_HOME"
+
+# Set the path to kakoune user configuration.
+KAKOUNE_CONFIG_DIR="$XDG_CONFIG_HOME/kak"
+export KAKOUNE_CONFIG_DIR
+mkdir "$KAKOUNE_CONFIG_DIR"
+
+# Example:
+#   echo abc >file.txt
+#   test_in_place file.txt tr a b
+#   cat file.txt
+#   # => bbc
+function test_in_place ()
+{
+    local file="$1"; shift
+    "$@" <"$file" >"$file.test_in_place"
+    local status="$?"
+    # Use cat and rm to rewrite "$file" to preserve its permissions.
+    cat "$file.test_in_place" >"$file"
+    rm "$file.test_in_place"
+    return "$status"
+}
 
 test_clean_up () {
     code=$?
-    rmdir --ignore-fail-on-non-empty "$HOME" "$XDG_RUNTIME_DIR"
     tmux kill-session -t "=$test_session"
     kak -clear
+    rmdir --ignore-fail-on-non-empty "$HOME" "$KAKOUNE_CONFIG_DIR" "$XDG_RUNTIME_DIR" "$XDG_CONFIG_HOME"
     exit $code
 }
 
