@@ -261,7 +261,5 @@ else
     printf "%s\n" "usage:"
     printf "%s\n" "tmux_kak_copy_mode here"
     printf "%s\n" "tmux_kak_copy_mode here -t <some_pane_id>"
-    # NOTE: This is an undocumented implementation detail:
-    # printf "%s\n" "tmux_kak_copy_mode private_here_with_info <scratch_dir> [-t <some_pane_id>]
     printf "%s\n" "tmux_kak_copy_mode in_new_window"
 fi
