@@ -43,4 +43,4 @@ trap test_clean_up EXIT
 
 # Start a new tmux session.
 test_session="TMUX_KAK_COPY_MODE_TEST_SESSION"
-tmux new-session -d -s "$test_session" -x80 -y10 env -i /bin/dash -i /dev/stdin
+tmux new-session -d -s "$test_session" -x80 -y10 /bin/sh
