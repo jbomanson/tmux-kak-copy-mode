@@ -74,7 +74,6 @@ debug_tmux_options ()
 {
     context="$1"
     shift
-    debug_echo "$context: scroll_region_upper: $(tmux display-message -p "$@" "#{scroll_region_upper}")"
     debug_echo "$context: scroll_region_lower: $(tmux display-message -p "$@" "#{scroll_region_lower}")"
     debug_echo "$context: pane_bottom: $(tmux display-message -p "$@" "#{pane_bottom}")"
     debug_echo "$context: pane_top: $(tmux display-message -p "$@" "#{pane_top}")"
