@@ -36,6 +36,7 @@ test_clean_up () {
     code=$?
     rmdir --ignore-fail-on-non-empty "$HOME" "$XDG_RUNTIME_DIR"
     tmux kill-session -t "=$test_session"
+    kak -clear
     exit $code
 }
 
