@@ -1,4 +1,5 @@
-repository_bin="$( ( cd "${0%/*}/.."; pwd ) )/bin"
+repository_root="$( ( cd "${0%/*}"; pwd ) )"
+repository_root="${repository_root%/test*}"
 
 test_name="${0##*/}"
 test_root="$PWD"
@@ -17,7 +18,7 @@ export HOME
 mkdir "$HOME"
 
 # Modify PATH to include the binary directory of this repository.
-PATH="$repository_bin:$PATH"
+PATH="$repository_root/bin:$PATH"
 export PATH
 
 # Modify PATH to include a directory for test helper binaries.
