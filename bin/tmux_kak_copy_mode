@@ -248,7 +248,9 @@ mode="$1"
 shift
 
 if test "$mode" = "here"; then
-    run_kak_here "$(gather_information "$(create_scratch_dir)")" "$@"
+    scratch_dir="$(create_scratch_dir)"
+    gather_information "$scratch_dir"
+    run_kak_here "$scratch_dir" "$@"
 elif test "$mode" = "in_new_window"; then
     refresh_kak_or run_kak_in_new_window
 elif test "$mode" = "private_capture_pane"; then
