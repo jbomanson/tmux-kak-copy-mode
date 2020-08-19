@@ -222,6 +222,11 @@ function analyze_test_case ()
     done < <(find "$test_name" -name "*.expected")
     if test "$failure"; then
         echo "$test_name" >>"$failure_file_log"
+        while read -r info_file
+        do
+            echo -e "$bold### $info_file$nc"
+            cat "$info_file"
+        done < <(find "$test_name" -name "*.info")
     fi
     popd >/dev/null
 }
