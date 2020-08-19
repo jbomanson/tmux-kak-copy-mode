@@ -12,7 +12,7 @@ prompt_message="# Insert lines below to be sent back to the pane."
 #   private_capture_pane -t <pane_id>
 function private_capture_pane ()
 {
-    tmux capture-pane -S- -E"$scroll_region_lower" -J -p -e "$@" \
+    tmux capture-pane -S- -E -J -p -e "$@" \
         | perl -pe "s/[ \t]+$//"
 }
 
@@ -97,7 +97,6 @@ run_kak_here ()
     displaced_pane_id="$1"; shift
     tmux_cursor_x="$1"; shift
     tmux_cursor_y="$1"; shift
-    scroll_region_upper="$1"; shift
     scroll_region_lower="$1"; shift
 
     # NOTE: This is only for setting the cursor position
@@ -121,8 +120,6 @@ run_kak_here ()
     let y_offset=tmux_content_lines-scroll_region_lower
     let kak_x=tmux_cursor_x+1
     let kak_y=tmux_cursor_y+y_offset
-    let kak_scroll_region_upper=scroll_region_upper+y_offset
-    let kak_scroll_region_lower=scroll_region_lower+y_offset
 
     kak_session="$(tmux_kak_session)"
     if test -n "$kak_session"; then
@@ -139,10 +136,7 @@ run_kak_here ()
               try %(
                   write
                   execute-keys 'ge'
-                  # select $kak_scroll_region_upper.1,$kak_scroll_region_lower.1
-                  # execute-keys '<a-:>'
                   select $kak_y.$kak_x,$kak_y.$kak_x
-                  # execute-keys vj
               )
               nop %sh(
                   tmux set-option -p @tmux_kak_copy_mode_kak_buffile \
