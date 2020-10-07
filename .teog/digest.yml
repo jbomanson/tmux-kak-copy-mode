@@ -1,0 +1,71 @@
+---
+help:
+  size: { lines: 4, words: 9, bytes: 106 }
+  first: 'usage:'
+  last: tmux_kak_copy_mode in_new_window
+  hash: c63307b01cc8b1e227e933ea9ff344ae72d01e8c
+help.stderr: empty
+lint_shell:
+  size: { lines: 21, words: 264, bytes: 2451 }
+  first: ".teog/script:8:10: note: Make sure not to read and write the same file in
+    the same pipeline. [SC2094]"
+  last: "./test/lib/prelude.sh:4:1: warning: test_name appears unused. Verify use
+    (or export if used externally). [SC2034]"
+  hash: e2f8ab44a3824a0e018ee34c123b09b131d0fdf0
+lint_shell.stderr: empty
+test/command_tmux_kak_copy_mode.sh: empty
+test/kak_config.sh:
+  size: { lines: 7, words: 15, bytes: 152 }
+  first: ''
+  last: "+can't find session: TMUX_KAK_COPY_MODE_TEST_SESSION"
+  hash: 4f86c87f357acdfa55b637f969fa249bb5e2d705
+test/kak_filter_hello_world.sh:
+  size: { lines: 8, words: 18, bytes: 242 }
+  first: ''
+  last: "+can't find session: TMUX_KAK_COPY_MODE_TEST_SESSION"
+  hash: 28d55e0b9e77803821e186823ad4c224c3144423
+test/kak_list_initial_sessions.sh:
+  size: { lines: 7, words: 14, bytes: 196 }
+  first: ''
+  last: "+duplicate session: TMUX_KAK_COPY_MODE_TEST_SESSION"
+  hash: 1e401bf3e2ec0b7b798ff733c486088fb1edca54
+test/private_capture_pane.sh:
+  size: { lines: 23, words: 50, bytes: 470 }
+  first: ''
+  last: "-"
+  hash: 8622b06568463861ff5ccadd689adf69e7d37403
+test/tmux_hello_world.sh:
+  size: { lines: 15, words: 39, bytes: 452 }
+  first: ''
+  last: "-Hello world"
+  hash: 4d78c26dfffb51998ed83e8e98515c0f33b04169
+test/tmux_kak_config.sh:
+  size: { lines: 13, words: 33, bytes: 394 }
+  first: ''
+  last: "-€PWD/.config/kak"
+  hash: 4c590f4a588890d0d173d38538faa3004190ec80
+test/tmux_kak_hello_world.sh:
+  size: { lines: 16, words: 46, bytes: 575 }
+  first: ''
+  last: "### tmux_kak_hello_world.sh/pane.info"
+  hash: e95b6c59e96ef997812a95a668127bbaddd1b24a
+test/tmux_kak_start_and_quit.sh:
+  size: { lines: 17, words: 46, bytes: 615 }
+  first: ''
+  last: "### tmux_kak_start_and_quit.sh/pane-during.info"
+  hash: 36e49ce27ff30103fcaed709030c48b3e29dda25
+test_summary:
+  size: { lines: 182, words: 448, bytes: 5790 }
+  first: 'test_task pwd: /tmp/teog20201007-510050-1y62lrj/checkout'
+  last: 9 examples, 8 failures
+  hash: 2cd7046f70b4ff86839dbb3ea268d166d783731d
+test_summary.stderr:
+  size: { lines: 1, words: 7, bytes: 55 }
+  first: 'mkdir: cannot create directory ‘test’: File exists'
+  last: 'mkdir: cannot create directory ‘test’: File exists'
+  hash: 25e6df3e4acf2fddd2e53f7b0cd6c15c852b9953
+teog:
+  input: 78bf3d4e7522875fed70d5c5296241f10858b2cb
+  status: 0
+  total: d9c4d35e91325bd2ce14374d33cd5afadf22b84d
+  version: 8

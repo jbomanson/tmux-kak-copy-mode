@@ -1,0 +1,35 @@
+#! /bin/bash
+
+root="$PWD"
+output_dir="$PWD"
+
+function run ()
+{
+    eval "$1" >"$1" 2>"$1.stderr" </dev/null &
+}
+
+function test_summary ()
+{
+    echo "test_task pwd: $PWD"
+    tree
+    mkdir test
+    "$root/test/test" --output_format="$output_dir/test/%s"
+}
+run test_summary
+
+function help ()
+{
+    "$root/bin/tmux_kak_copy_mode" --help
+}
+run help
+
+function lint_shell ()
+{
+    (
+        echo ".teog/script"
+        exec find . -type f -name "*.sh"
+    ) | sort | xargs shellcheck --format=gcc
+}
+run lint_shell
+
+wait
