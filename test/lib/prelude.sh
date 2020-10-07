@@ -22,7 +22,7 @@ PATH="$repository_root/bin:$PATH"
 export PATH
 
 # Modify PATH to include a directory for test helper binaries.
-PATH="$test_root/test/bin:$PATH"
+PATH="$repository_root/test/bin:$PATH"
 export PATH
 
 # The shell used by tmux for new windows.
