@@ -6,12 +6,12 @@ help:
   hash: c63307b01cc8b1e227e933ea9ff344ae72d01e8c
 help.stderr: empty
 lint_shell:
-  size: { lines: 21, words: 264, bytes: 2451 }
+  size: { lines: 25, words: 318, bytes: 2946 }
   first: ".teog/script:7:10: note: Make sure not to read and write the same file in
     the same pipeline. [SC2094]"
-  last: "./test/lib/prelude.sh:4:1: warning: test_name appears unused. Verify use
-    (or export if used externally). [SC2034]"
-  hash: 89dbe4e48f3c0ecb760bcefb66f68cfd0147efff
+  last: "./test/lib/prelude.sh:83:64: note: Double quote to prevent globbing and word
+    splitting. [SC2086]"
+  hash: 5aba0efbf18f12a181d0a17b281cb5462c0d13ed
 lint_shell.stderr: empty
 test/command_tmux_kak_copy_mode.sh: empty
 test/kak_config.sh: empty
@@ -30,10 +30,10 @@ test_summary:
   size: { lines: 105, words: 235, bytes: 2988 }
   first: ''
   last: 9 examples, 1 failures
-  hash: e7ebe2151e40f6ae7bbdd263c618295105a6af03
+  hash: 6f5fc7eaa918c0b534c22ab06581e09c8dfe2641
 test_summary.stderr: empty
 teog:
-  input: 47ec784e9b0085f93ad6c31b5f7deaa204c591a6
+  input: 0e8242634d199585f3730df3585124ece7f233f6
   status: 0
-  total: d7e96c8099f5e8999f4de96a3cb4b46f8b26a47b
+  total: 399cb5092cec4d25296a9270aaa336c18f5e2a9c
   version: 8
