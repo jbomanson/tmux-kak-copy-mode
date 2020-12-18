@@ -1,6 +1,5 @@
 #! /bin/bash
 
-root="$PWD"
 output_dir="$PWD"
 
 function run ()
@@ -11,13 +10,13 @@ function run ()
 function test_summary ()
 {
     mkdir -p test
-    "$root/test/test" --output_format="$output_dir/test/%s"
+    test/test --output_format="$output_dir/test/%s"
 }
 run test_summary
 
 function help ()
 {
-    "$root/bin/tmux_kak_copy_mode" --help
+    bin/tmux_kak_copy_mode --help
 }
 run help
 
