@@ -10,9 +10,7 @@ function run ()
 
 function test_summary ()
 {
-    echo "test_task pwd: $PWD"
-    tree
-    mkdir test
+    mkdir -p test
     "$root/test/test" --output_format="$output_dir/test/%s"
 }
 run test_summary

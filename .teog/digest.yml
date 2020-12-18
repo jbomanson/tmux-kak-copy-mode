@@ -27,17 +27,13 @@ test/tmux_kak_start_and_quit.sh:
   last: "                            *scratch* 1:1 [scratch] 1 sel - client0@[my_session]"
   hash: a0aebe77174678a86708d5ebca327917af4b50d1
 test_summary:
-  size: { lines: 136, words: 324, bytes: 3940 }
-  first: 'test_task pwd: /tmp/teog20201007-513742-15ddfwo/checkout'
+  size: { lines: 105, words: 235, bytes: 2988 }
+  first: ''
   last: 9 examples, 1 failures
-  hash: ccdaf87d8665a4bf93c18a0635233cef61673c42
-test_summary.stderr:
-  size: { lines: 1, words: 7, bytes: 55 }
-  first: 'mkdir: cannot create directory ‘test’: File exists'
-  last: 'mkdir: cannot create directory ‘test’: File exists'
-  hash: 25e6df3e4acf2fddd2e53f7b0cd6c15c852b9953
+  hash: 8da328e5682394422c195e6505fc2d84b1449b37
+test_summary.stderr: empty
 teog:
-  input: edf2b808a03bdec14287cda86102787319e8f857
+  input: 15c20002d206983c34142ee15bcc824753a3c2ce
   status: 0
-  total: 8381feb6ed2cc2a2d7fb3fd4469fc894a4ad558d
+  total: d88955e4ff8df0aca0559c9e7f3e37e7ce64fbf1
   version: 8
