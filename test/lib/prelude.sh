@@ -68,6 +68,11 @@ function test_in_place ()
     return "$status"
 }
 
+test_sleep_for_tmux ()
+{
+    sleep 0.5
+}
+
 test_clean_up () {
     code=$?
     tmux kill-session -t "=$test_session"

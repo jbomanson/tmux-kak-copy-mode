@@ -6,14 +6,16 @@ help:
   hash: c63307b01cc8b1e227e933ea9ff344ae72d01e8c
 help.stderr: empty
 lint_shell:
-  size: { lines: 25, words: 318, bytes: 2946 }
+  size: { lines: 29, words: 362, bytes: 3362 }
   first: ".teog/script:7:10: note: Make sure not to read and write the same file in
     the same pipeline. [SC2094]"
-  last: "./test/lib/prelude.sh:83:64: note: Double quote to prevent globbing and word
+  last: "./test/lib/prelude.sh:88:64: note: Double quote to prevent globbing and word
     splitting. [SC2086]"
-  hash: 5aba0efbf18f12a181d0a17b281cb5462c0d13ed
+  hash: 7fc2628497fdbe7ddae1007470cd98c44672f7fe
 lint_shell.stderr: empty
 test/command_tmux_kak_copy_mode.sh: empty
+test/here.sh: empty
+test/here_quit.sh: empty
 test/kak_config.sh: empty
 test/kak_filter_hello_world.sh: empty
 test/kak_list_initial_sessions.sh: empty
@@ -27,13 +29,13 @@ test/tmux_kak_start_and_quit.sh:
   last: "                            *scratch* 1:1 [scratch] 1 sel - client0@[my_session]"
   hash: a0aebe77174678a86708d5ebca327917af4b50d1
 test_summary:
-  size: { lines: 105, words: 235, bytes: 2988 }
+  size: { lines: 123, words: 281, bytes: 3593 }
   first: ''
-  last: 9 examples, 1 failures
-  hash: 6f5fc7eaa918c0b534c22ab06581e09c8dfe2641
+  last: 11 examples, 1 failures
+  hash: 4bd6701a448b8ddd8713ea723a390240b5c49ed5
 test_summary.stderr: empty
 teog:
-  input: 0e8242634d199585f3730df3585124ece7f233f6
+  input: b03f82d04146f0d23ad2b6c589112151fcd6138d
   status: 0
-  total: 399cb5092cec4d25296a9270aaa336c18f5e2a9c
+  total: 6cf29d3f9bd3687b1252a0b2a9468563e2fdc2cd
   version: 8
