@@ -182,10 +182,11 @@ run_kak_in_new_window ()
 {
     local scratch_dir="$(create_scratch_dir)"
     local calling_pane_id="$(tmux display-message -p "#{pane_id}")"
+    local calling_window_zoomed_flag="$(tmux display-message -p "#{window_zoomed_flag}")"
     local new_name="tmux_kak_copy_mode ($(tmux display-message -p '#{pane_current_command}'))"
     gather_information "$scratch_dir/sub"
     tmux new-window -d -n "$new_name" \
-        "$0" private_in_new_window_callback "$scratch_dir" "$calling_pane_id"
+        "$0" private_in_new_window_callback "$scratch_dir" "$calling_pane_id" "$calling_window_zoomed_flag"
     # The above tmux command returns immediately without waiting for the
     # callback to finish.
     # In fact, anything else would be disastrous if run_kak_in_new_window is being
@@ -196,8 +197,10 @@ private_in_new_window_callback ()
 {
     local scratch_dir="$1"; shift
     local calling_pane_id="$1"; shift
+    local calling_window_zoomed_flag="$1"; shift
     local stderr_file="$scratch_dir/new_window.stderr"
     tmux swap-pane -s "$calling_pane_id" -t "$TMUX_PANE"
+    test "$calling_window_zoomed_flag" -eq 1 && tmux resize-pane -Z
     # Pass a sub directory of scratch_dir with gathered information in it because:
     # - here-with_info will remove its argument directory afterward and
     # - we do not want scratch_dir to be removed until the end of this file.

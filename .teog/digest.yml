@@ -30,19 +30,15 @@ test/tmux_kak_start_and_quit.sh:
   first: ''
   last: "                            *scratch* 1:1 [scratch] 1 sel - client0@[my_session]"
   hash: a0aebe77174678a86708d5ebca327917af4b50d1
-test/window_zoomed_flag.sh:
-  size: { lines: 11, words: 26, bytes: 358 }
-  first: ''
-  last: 'TMUX_KAK_COPY_MODE_TEST_SESSION:1: tmux_kak_copy_mode (bash) (1 panes) [80x10] '
-  hash: 2dbf6154dfc3695d722db99cd5e5656684a296b5
+test/window_zoomed_flag.sh: empty
 test_summary:
-  size: { lines: 167, words: 389, bytes: 5238 }
+  size: { lines: 155, words: 360, bytes: 4750 }
   first: ''
-  last: 14 examples, 2 failures
-  hash: 91db900beb56279aca490d0947435ebf4ea56b94
+  last: 14 examples, 1 failures
+  hash: a8fe6fa77ed8fd25a9db76f4a7c8ca781f568723
 test_summary.stderr: empty
 teog:
-  input: 46dd8ff997e6ab308391ee53e534d3ca229b7939
+  input: 42044307393084aefd149d0887495327477ccf6e
   status: 0
-  total: aa91f2d4ce013eca9fb98a79ba465c176ef6ed4e
+  total: c4fb77f942961bbf3c625d3a43ffd52384403517
   version: 8
