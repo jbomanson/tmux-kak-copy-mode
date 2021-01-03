@@ -6,12 +6,12 @@ help:
   hash: c63307b01cc8b1e227e933ea9ff344ae72d01e8c
 help.stderr: empty
 lint_shell:
-  size: { lines: 33, words: 406, bytes: 3814 }
+  size: { lines: 35, words: 428, bytes: 4046 }
   first: ".teog/script:7:10: note: Make sure not to read and write the same file in
     the same pipeline. [SC2094]"
   last: "./test/lib/prelude.sh:88:64: note: Double quote to prevent globbing and word
     splitting. [SC2086]"
-  hash: ae80d72bab33354f95ae038c9b88974d469c733c
+  hash: 334a459f0e80eb8c529f6e10814a2dbcd992f53d
 lint_shell.stderr: empty
 test/command_tmux_kak_copy_mode.sh: empty
 test/here.sh: empty
@@ -30,14 +30,19 @@ test/tmux_kak_start_and_quit.sh:
   first: ''
   last: "                            *scratch* 1:1 [scratch] 1 sel - client0@[my_session]"
   hash: a0aebe77174678a86708d5ebca327917af4b50d1
-test_summary:
-  size: { lines: 143, words: 331, bytes: 4288 }
+test/window_zoomed_flag.sh:
+  size: { lines: 11, words: 26, bytes: 358 }
   first: ''
-  last: 13 examples, 1 failures
-  hash: 1c9dee9ff6dca0d5f24b569ad149ffd24a620b8e
+  last: 'TMUX_KAK_COPY_MODE_TEST_SESSION:1: tmux_kak_copy_mode (bash) (1 panes) [80x10] '
+  hash: 2dbf6154dfc3695d722db99cd5e5656684a296b5
+test_summary:
+  size: { lines: 167, words: 389, bytes: 5238 }
+  first: ''
+  last: 14 examples, 2 failures
+  hash: 91db900beb56279aca490d0947435ebf4ea56b94
 test_summary.stderr: empty
 teog:
-  input: f4f579f57d2632298d3736fb59ee2cb28c35c0fd
+  input: 46dd8ff997e6ab308391ee53e534d3ca229b7939
   status: 0
-  total: be1c297e0705713ec069dc4ba71cadbc8e9f3238
+  total: aa91f2d4ce013eca9fb98a79ba465c176ef6ed4e
   version: 8
