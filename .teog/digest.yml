@@ -1,9 +1,9 @@
 ---
 help:
-  size: { lines: 4, words: 9, bytes: 106 }
+  size: { lines: 7, words: 10, bytes: 127 }
   first: 'usage:'
-  last: tmux_kak_copy_mode in_new_window
-  hash: c63307b01cc8b1e227e933ea9ff344ae72d01e8c
+  last: tmux_kak_copy_mode here -t <some_pane_id>
+  hash: 1fedf62d851a7b295023489fd1b7dfcd05a2457b
 help.stderr: empty
 lint_shell:
   size: { lines: 39, words: 472, bytes: 4497 }
@@ -14,11 +14,7 @@ lint_shell:
   hash: b419bb6ca594d631bdc15ea84d7388661e2a9418
 lint_shell.stderr: empty
 test/command_tmux_kak_copy_mode.sh: empty
-test/default.sh:
-  size: { lines: 30, words: 71, bytes: 598 }
-  first: ''
-  last: 'TMUX_KAK_COPY_MODE_TEST_SESSION:0: sh* (1 panes) [80x10] '
-  hash: b32a9e812a22b9efaf25290c332ee5109d9739a9
+test/default.sh: empty
 test/here.sh: empty
 test/here_quit.sh: empty
 test/in_new_window.sh: empty
@@ -38,13 +34,13 @@ test/tmux_kak_start_and_quit.sh:
 test/window_zoomed_flag.sh: empty
 test/window_zoomed_flag_quit.sh: empty
 test_summary:
-  size: { lines: 207, words: 486, bytes: 6285 }
+  size: { lines: 177, words: 414, bytes: 5556 }
   first: ''
-  last: 16 examples, 2 failures
-  hash: c406959a874492734dc8b30824dfd662a22fe2ce
+  last: 16 examples, 1 failures
+  hash: 5c6b63491486dff50fb576f4923474b797b6a4c0
 test_summary.stderr: empty
 teog:
-  input: e9cd74800085fe8d9ce603503d75d7ebd9de7aa3
+  input: e723d29ad46f73e36bb651da2b3faac8d6ca1a02
   status: 0
-  total: ac30e1b478efece043aab2eb9ba4c32d700755ba
+  total: 06d7fd90cb6af72258abaa2c721faed9a111ff97
   version: 8

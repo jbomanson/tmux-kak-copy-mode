@@ -76,7 +76,7 @@ Add a tmux key binding to start tmux_kak_copy_mode in response to a key press by
 adding a line such as the following to your `~/.tmux.conf`:
 
 ```tmux
-bind-key i run-shell 'tmux_kak_copy_mode in_new_window'
+bind-key i run-shell tmux_kak_copy_mode
 ```
 
 Then run `tmux source-file ~/.tmux.conf` or restart tmux.

@@ -253,7 +253,7 @@ if test "$mode" = "here"; then
     scratch_dir="$(create_scratch_dir)"
     gather_information "$scratch_dir"
     run_kak_here "$scratch_dir" "$@"
-elif test "$mode" = "in_new_window"; then
+elif test "$mode" = "in_new_window" || test "$mode" = ""; then
     refresh_kak_or run_kak_in_new_window
 elif test "$mode" = "private_capture_pane"; then
     private_capture_pane "$@"
@@ -263,7 +263,10 @@ elif test "$mode" = "private_in_new_window_callback"; then
     private_in_new_window_callback "$@"
 else
     printf "%s\n" "usage:"
+    printf "%s\n" ""
+    printf "%s\n" "tmux_kak_copy_mode"
+    printf "%s\n" "tmux_kak_copy_mode in_new_window"
+    printf "%s\n" ""
     printf "%s\n" "tmux_kak_copy_mode here"
     printf "%s\n" "tmux_kak_copy_mode here -t <some_pane_id>"
-    printf "%s\n" "tmux_kak_copy_mode in_new_window"
 fi
