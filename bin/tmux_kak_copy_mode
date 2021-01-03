@@ -189,8 +189,8 @@ run_kak_in_new_window ()
         "$0" private_in_new_window_callback "$scratch_dir" "$calling_pane_id" "$calling_window_zoomed_flag"
     # The above tmux command returns immediately without waiting for the
     # callback to finish.
-    # In fact, anything else would be disastrous if run_kak_in_new_window is being
-    # called from a tmux key binding because tmux would then get stuck.
+    # Lack of waiting facilitates the smooth execution of this script via a
+    # tmux key binding.
 }
 
 private_in_new_window_callback ()
