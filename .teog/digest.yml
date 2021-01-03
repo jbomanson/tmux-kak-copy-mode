@@ -6,14 +6,24 @@ help:
   hash: 1fedf62d851a7b295023489fd1b7dfcd05a2457b
 help.stderr: empty
 lint_shell:
-  size: { lines: 41, words: 494, bytes: 4738 }
+  size: { lines: 47, words: 566, bytes: 5395 }
   first: ".teog/script:7:10: note: Make sure not to read and write the same file in
     the same pipeline. [SC2094]"
   last: "./test/lib/prelude.sh:94:87: note: Double quote to prevent globbing and word
     splitting. [SC2086]"
-  hash: 3e89b4c0560c9b0d76e9b1a5dfe818bf1cdabed6
+  hash: bdcca4f6790c3fdb27a90a6f2c166e6d4aff7eac
 lint_shell.stderr: empty
 test/command_tmux_kak_copy_mode.sh: empty
+test/cursor.sh:
+  size: { lines: 18, words: 33, bytes: 209 }
+  first: ''
+  last: "+# Insert lines below to be sent back to the pane.CURSOR"
+  hash: e5753c0fc50324c7879be68f0dd78433ad7a52cf
+test/cursor_full.sh:
+  size: { lines: 17, words: 32, bytes: 210 }
+  first: ''
+  last: "+# Insert lines below to be sent back to the pane.CURSOR"
+  hash: a9038f947f77c64968d749355a37c0fd955592fa
 test/default.sh: empty
 test/here.sh: empty
 test/here_quit.sh: empty
@@ -35,13 +45,13 @@ test/tmux_kak_start_and_quit.sh:
 test/window_zoomed_flag.sh: empty
 test/window_zoomed_flag_quit.sh: empty
 test_summary:
-  size: { lines: 218, words: 538, bytes: 7008 }
+  size: { lines: 277, words: 667, bytes: 8412 }
   first: ''
-  last: 17 examples, 1 failures
-  hash: 1024b3c12bfd6549c77e2c4cf917cf988f8452bc
+  last: 19 examples, 3 failures
+  hash: 551723f2cec1ce2baf5caa8bfcff5935b74d5bfe
 test_summary.stderr: empty
 teog:
-  input: 0a6b038c123c4fc53a31fb57d517eb3d527df6a3
+  input: 5d7362a672b2124689c52e1e1356bee365a01db0
   status: 0
-  total: bff6bd0abad19f18a27355b1349d6530aa819c80
+  total: 243b98eeeb1221f18490f451a360fba90cb94f54
   version: 8
