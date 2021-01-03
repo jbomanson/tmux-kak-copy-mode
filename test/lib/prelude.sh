@@ -27,6 +27,11 @@ HOME="$test_root/home"
 prelude_export HOME
 mkdir "$HOME"
 
+# Set up a temporary directory specific to this test.
+TMPDIR="$test_root/tmp"
+prelude_export TMPDIR
+mkdir "$TMPDIR"
+
 # Modify PATH to include the binary directory of this repository.
 PATH="$repository_root/bin:$PATH"
 # Modify PATH to include a directory for test helper binaries.

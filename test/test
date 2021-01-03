@@ -231,7 +231,7 @@ function analyze_test_case ()
     popd >/dev/null
 }
 
-# A helper method to simplify the output of tree so that the output is nicer
+# A helper method to simplify the output of the `tree` program so that the output is nicer
 # to diff.
 function postprocess_tree ()
 {
@@ -243,13 +243,19 @@ function postprocess_tree ()
     }'
 }
 
+# A helper method to stabilize some nondeterministic outputs.
+function postprocess_text ()
+{
+    sed -r 's/tmux_kak_copy_mode\........./tmux_kak_copy_mode\.XXXXXXXX/'
+}
+
 # Analyzes and presents the file tree of all test output files.
 function analyze_tree ()
 {
     local t="$scratch_extra_dir/tree"
     cd "$scratch_working_root"
-    tree --charset "" --noreport -p -a -I ".git" -P "*.expected" --prune | sed -r 's/\.expected//' | postprocess_tree >"$t.expected"
-    tree --charset "" --noreport -p -a -I ".git|*.expected" | postprocess_tree >"$t.actual"
+    tree --charset "" --noreport -p -a -I ".git" -P "*.expected" --prune | sed -r 's/\.expected//' | postprocess_tree | postprocess_text >"$t.expected"
+    tree --charset "" --noreport -p -a -I ".git|*.expected" | postprocess_tree | postprocess_text >"$t.actual"
     "${diff_cmd[@]}" --label "expected tree" --label "actual   tree" \
         "$t.expected" "$t.actual" >"$t.diff" || true
 }
