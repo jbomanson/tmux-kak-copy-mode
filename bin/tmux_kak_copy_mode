@@ -212,6 +212,7 @@ private_in_new_window_callback ()
         env SHELL="/bin/bash" tmux run-shell -t "$calling_pane_id" "cat '$stderr_file'"
     fi
     tmux swap-pane -s "$calling_pane_id" -t "$TMUX_PANE"
+    test "$calling_window_zoomed_flag" -eq 1 && tmux resize-pane -Z
     clean_up_scratch_dir
 }
 
