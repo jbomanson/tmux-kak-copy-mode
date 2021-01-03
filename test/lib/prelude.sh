@@ -90,4 +90,5 @@ trap test_clean_up EXIT
 
 # Start a new tmux session.
 test_session="TMUX_KAK_COPY_MODE_TEST_SESSION"
-eval tmux new-session -d -s '"$test_session"' -x80 -y10 -- env $variable_assignments /bin/sh
+tmux_config_file="$repository_root/test/lib/tmux.conf"
+eval tmux -f "$tmux_config_file" new-session -d -s '"$test_session"' -x80 -y10 -- env $variable_assignments /bin/sh
