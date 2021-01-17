@@ -135,6 +135,8 @@ run_kak_here ()
     kak \
         "${session_arguments[@]}" \
         -e "
+            hook -always -once global ClientClose %val(client) \
+                \"delete-buffer! '%val(buffile)'\"
             try %(
               ansi-render
               try %(
@@ -166,10 +168,6 @@ run_kak_here ()
     tmux set-option -pu @tmux_kak_copy_mode_kak_buffile
     tmux set-option -pu @tmux_kak_copy_mode_kak_client
     tmux set-option -pu @tmux_kak_copy_mode_kak_session
-
-    if test -n "$kak_session"; then
-        printf "%s" "delete-buffer! '$content_file'" | kak -p "$kak_session"
-    fi
 
     response="$(grep -P -m1 -A 100000 "^\Q$prompt_message\E$" -- "$content_file" | tail -n+2)"
     if test -n "$response"; then
