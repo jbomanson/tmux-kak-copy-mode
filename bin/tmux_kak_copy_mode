@@ -176,6 +176,20 @@ run_kak_here ()
         printf -v response "%s\n" "$response"
         tmux send-keys -l -t "$displaced_pane_id" "$response"
     fi
+
+    # # Conditionally toggle the zoom of the displaced pane (if any) to match the current pane.
+    # test "$(
+    #     tmux display-message -p "#{window_zoomed_flag}" ";" \
+    #         display-message -p -t "$displaced_pane_id" "#{window_zoomed_flag}" \
+    #         | sort --unique | wc -l
+    # )" -eq 2 &&
+    #     echo tmux resize-pane -t "$displaced_pane_id" -Z >resize.info
+
+    # tmux display-message -p "#{window_zoomed_flag}" ";" \
+    #         display-message -p -t "$displaced_pane_id" "#{window_zoomed_flag}" >hubbabubba.info
+    #         tmux display-message -p "#{window_zoomed_flag}" ";" \
+    #         display-message -p -t "$displaced_pane_id" "#{window_zoomed_flag}" \
+    #         | sort --unique | wc -l >wc.info
 }
 
 run_kak_in_new_window ()
@@ -211,8 +225,21 @@ private_in_new_window_callback ()
         printf "%s\n" "tmux_kak_copy_mode: exit status: $exit_status" >>"$stderr_file"
         env SHELL="/bin/bash" tmux run-shell -t "$calling_pane_id" "cat '$stderr_file'"
     fi
+
+    # Determine whether the displaced and current pane differ in their zoomed flags.
+    # A value of 1 means agreement and 2 means disagreement.
+    local window_zoomed_flag_unique_count="$(
+        tmux display-message -p -t "$TMUX_PANE" "#{window_zoomed_flag}" ";" \
+            display-message -p -t "$calling_pane_id" "#{window_zoomed_flag}" \
+            | sort --unique | wc -l
+    )"
+
     tmux swap-pane -s "$calling_pane_id" -t "$TMUX_PANE"
-    test "$calling_window_zoomed_flag" -eq 1 && tmux resize-pane -Z
+
+    # Toggle the zoom flag of the original pane to match that of the copy.
+    test "$window_zoomed_flag_unique_count" -eq 2 &&
+        tmux resize-pane -t "$calling_pane_id" -Z
+
     clean_up_scratch_dir
 }
 

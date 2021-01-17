@@ -43,25 +43,17 @@ test/tmux_kak_start_and_quit.sh:
   last: "                            *scratch* 1:1 [scratch] 1 sel - client0@[my_session]"
   hash: a0aebe77174678a86708d5ebca327917af4b50d1
 test/window_zoomed_flag.sh: empty
-test/window_zoomed_flag_during_quit.sh:
-  size: { lines: 10, words: 20, bytes: 324 }
-  first: ''
-  last: 'TMUX_KAK_COPY_MODE_TEST_SESSION:0: sh* (2 panes) [80x10] '
-  hash: 7156339c0e217f03aacaa4854fb9b55163ac8cb0
+test/window_zoomed_flag_during_quit.sh: empty
 test/window_zoomed_flag_quit.sh: empty
-test/window_zoomed_flag_twice_quit.sh:
-  size: { lines: 10, words: 20, bytes: 321 }
-  first: ''
-  last: 'TMUX_KAK_COPY_MODE_TEST_SESSION:0: sh*Z (2 panes) [80x10] '
-  hash: 5aa5c4ade765cc7f003bcc155c0bbd95755d31f3
+test/window_zoomed_flag_twice_quit.sh: empty
 test_summary:
-  size: { lines: 326, words: 783, bytes: 10363 }
+  size: { lines: 304, words: 737, bytes: 9435 }
   first: ''
-  last: 21 examples, 5 failures
-  hash: c810d317dc36aae8bf1c098d44974606aee959c1
+  last: 21 examples, 3 failures
+  hash: 606523a961088166a53dc3283ec3cdc1add368b5
 test_summary.stderr: empty
 teog:
-  input: 6ccb93b51ec9ed8ffaac86fcd959cb277df2b930
+  input: b2d891db282ac611966427e2dd5f692bfe430bbf
   status: 0
-  total: 8e7e9d65d3ec6cf488435e44978801dfe3122725
+  total: 0b4e0320cc211adff96feff295ade77c28d80150
   version: 8
