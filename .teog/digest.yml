@@ -2,8 +2,8 @@
 help:
   size: { lines: 7, words: 10, bytes: 127 }
   first: 'usage:'
-  last: tmux_kak_copy_mode here -t <some_pane_id>
-  hash: 1fedf62d851a7b295023489fd1b7dfcd05a2457b
+  last: tmux-kak-copy-mode here -t <some_pane_id>
+  hash: 8aa08d9f0ef2e5b5ad9a4330543b4c586f99acee
 help.stderr: empty
 lint_shell:
   size: { lines: 51, words: 610, bytes: 5904 }
@@ -11,49 +11,53 @@ lint_shell:
     the same pipeline. [SC2094]"
   last: "./test/lib/prelude.sh:94:87: note: Double quote to prevent globbing and word
     splitting. [SC2086]"
-  hash: f249891bae7d0325ae1456520420f3922f9bc319
+  hash: 5f0d8d50877ce905ef18bfe8841076b4f545ec85
 lint_shell.stderr: empty
-test/command_tmux_kak_copy_mode.sh: empty
+test/command-tmux-kak-copy-mode.sh: empty
+test/cursor-full.sh:
+  size: { lines: 21, words: 43, bytes: 456 }
+  first: ''
+  last: "-$CURSOR"
+  hash: c7dbfa6b8271b0cf3e0563af6f19dd15c2da8ef4
 test/cursor.sh:
-  size: { lines: 18, words: 33, bytes: 209 }
+  size: { lines: 19, words: 45, bytes: 429 }
   first: ''
-  last: "+# Insert lines below to be sent back to the pane.CURSOR"
-  hash: e5753c0fc50324c7879be68f0dd78433ad7a52cf
-test/cursor_full.sh:
-  size: { lines: 17, words: 32, bytes: 210 }
-  first: ''
-  last: "+# Insert lines below to be sent back to the pane.CURSOR"
-  hash: a9038f947f77c64968d749355a37c0fd955592fa
+  last: "-"
+  hash: 0f6058f71c8726eeffae5b46164c58637524fff4
 test/default.sh: empty
+test/here-quit.sh: empty
 test/here.sh: empty
-test/here_quit.sh: empty
-test/in_new_window.sh: empty
-test/in_new_window_quit.sh: empty
-test/kak_config.sh: empty
-test/kak_filter_hello_world.sh: empty
-test/kak_list_initial_sessions.sh: empty
-test/private_capture_pane.sh: empty
-test/run_shell_in_new_window.sh: empty
-test/tmux_hello_world.sh: empty
-test/tmux_kak_config.sh: empty
-test/tmux_kak_hello_world.sh: empty
-test/tmux_kak_start_and_quit.sh:
+test/in-new-window-quit.sh: empty
+test/in-new-window.sh: empty
+test/kak-config.sh: empty
+test/kak-filter-hello-world.sh: empty
+test/kak-list-initial-sessions.sh: empty
+test/private-capture-pane.sh: empty
+test/run-shell-in-new-window.sh:
+  size: { lines: 29, words: 73, bytes: 958 }
+  first: ''
+  last: "### run-shell-in-new-window.sh/windows.info"
+  hash: 3c4c5381893c4f24cb57e382dfa8ca082444988a
+test/tmux-hello-world.sh: empty
+test/tmux-kak-config.sh: empty
+test/tmux-kak-hello-world.sh: empty
+test/tmux-kak-start-and-quit.sh:
   size: { lines: 30, words: 65, bytes: 556 }
   first: ''
   last: "                            *scratch* 1:1 [scratch] 1 sel - client0@[my_session]"
-  hash: a0aebe77174678a86708d5ebca327917af4b50d1
-test/window_zoomed_flag.sh: empty
-test/window_zoomed_flag_during_quit.sh: empty
-test/window_zoomed_flag_quit.sh: empty
-test/window_zoomed_flag_twice_quit.sh: empty
+  hash: 4e2c5cedfaa91064483e4e3267d0786b6aa58bdc
+test/window-zoomed-flag-during-quit.sh: empty
+test/window-zoomed-flag-quit.sh: empty
+test/window-zoomed-flag-twice-quit.sh: empty
+test/window-zoomed-flag.sh: empty
 test_summary:
-  size: { lines: 304, words: 737, bytes: 9342 }
+  size: { lines: 327, words: 800, bytes: 10371 }
   first: ''
-  last: 21 examples, 3 failures
-  hash: 99c2108b864bc888b204ec45daee3d30e5b70adf
+  last: 21 examples, 4 failures
+  hash: 782211875ba3a0c4f284041b58294e0a68f915cd
 test_summary.stderr: empty
 teog:
-  input: d9ec3addc064a40c9198c58ff1ae5143cc442b98
+  input: d3a68b3f6926debda44e79fda0c7a78e320ef1ba
   status: 0
-  total: 25c4704c1b11e3fc44f5aa25ac6c2e2a48c6ca48
+  total: 1ee996508ff5241d8ae6a22d1aa6068ea841e169
   version: 8

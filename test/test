@@ -38,7 +38,7 @@ fi
 #		Set up a scratch directory
 #===============================================================================
 
-scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}/tmux_kak_copy_mode_test.XXXXXXXX")
+scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}/tmux-kak-copy-mode-test.XXXXXXXX")
 
 clean_up () {
     code=$?
@@ -246,7 +246,7 @@ function postprocess_tree ()
 # A helper method to stabilize some nondeterministic outputs.
 function postprocess_text ()
 {
-    sed -r 's/tmux_kak_copy_mode\........./tmux_kak_copy_mode\.XXXXXXXX/'
+    sed -r 's/tmux-kak-copy-mode\........./tmux-kak-copy-mode\.XXXXXXXX/'
 }
 
 # Analyzes and presents the file tree of all test output files.

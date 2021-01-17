@@ -17,7 +17,7 @@ run test_summary
 
 function help ()
 {
-    bin/tmux_kak_copy_mode --help
+    bin/tmux-kak-copy-mode --help
 }
 run help
 

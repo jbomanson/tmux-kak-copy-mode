@@ -27,7 +27,7 @@ clean_up_scratch_dir () {
 
 if test -n "$TMUX_KAK_COPY_MODE_DEBUG"; then
     debug_echo () {
-        printf "%s\n" "# tmux_kak_copy_mode: $*"
+        printf "%s\n" "# tmux-kak-copy-mode: $*"
     }
 else
     debug_echo () {
@@ -37,7 +37,7 @@ fi
 
 create_scratch_dir ()
 {
-    scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}"/tmux_kak_copy_mode.XXXXXXXX)
+    scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}"/tmux-kak-copy-mode.XXXXXXXX)
     printf "%s\n" "$scratch_dir"
 }
 
@@ -152,15 +152,15 @@ run_kak_here ()
                   tmux set-option -p @tmux_kak_copy_mode_kak_session \
                       \"\$kak_session\"
               )
-              set-option buffer filetype tmux_kak_copy_mode
+              set-option buffer filetype tmux-kak-copy-mode
               declare-option str tmux_kak_copy_mode_displaced_pane_id
               set-option buffer tmux_kak_copy_mode_displaced_pane_id \
                   '$displaced_pane_id'
             ) catch %(
               edit!
               execute-keys 'ge'
-              set-option buffer filetype tmux_kak_copy_mode
-              fail tmux_kak_copy_mode: failed to call ansi-render
+              set-option buffer filetype tmux-kak-copy-mode
+              fail tmux-kak-copy-mode: failed to call ansi-render
             )
         " \
         "$content_file"
@@ -195,7 +195,7 @@ run_kak_in_new_window ()
     local scratch_dir="$(create_scratch_dir)"
     local calling_pane_id="$(tmux display-message -p "#{pane_id}")"
     local calling_window_zoomed_flag="$(tmux display-message -p "#{window_zoomed_flag}")"
-    local new_name="tmux_kak_copy_mode ($(tmux display-message -p '#{pane_current_command}'))"
+    local new_name="tmux-kak-copy-mode ($(tmux display-message -p '#{pane_current_command}'))"
     gather_information "$scratch_dir/sub"
     tmux new-window -d -n "$new_name" \
         "$0" private_in_new_window_callback "$scratch_dir" "$calling_pane_id" "$calling_window_zoomed_flag"
@@ -220,7 +220,7 @@ private_in_new_window_callback ()
     local exit_status="$?"
     if test "$exit_status" -ne 0 -o -s "$stderr_file"; then
         echo "Got some kind of an error"
-        printf "%s\n" "tmux_kak_copy_mode: exit status: $exit_status" >>"$stderr_file"
+        printf "%s\n" "tmux-kak-copy-mode: exit status: $exit_status" >>"$stderr_file"
         env SHELL="/bin/bash" tmux run-shell -t "$calling_pane_id" "cat '$stderr_file'"
     fi
 
@@ -251,7 +251,7 @@ refresh_kak_or ()
             evaluate-commands -client '$client' %(
                 buffer '$buffile'
                 nop %sh(
-                    tmux_kak_copy_mode private_capture_pane \
+                    tmux-kak-copy-mode private_capture_pane \
                       -t \"\$kak_opt_tmux_kak_copy_mode_displaced_pane_id\" \
                       >'$buffile'
                 )
@@ -262,7 +262,7 @@ refresh_kak_or ()
                     try %(write)
                 ) catch %(
                     edit!
-                    fail tmux_kak_copy_mode: failed to call ansi-render
+                    fail tmux-kak-copy-mode: failed to call ansi-render
                 )
             )
         )" | kak -p "$session"
@@ -278,7 +278,7 @@ if test "$mode" = "here"; then
     scratch_dir="$(create_scratch_dir)"
     gather_information "$scratch_dir"
     run_kak_here "$scratch_dir" "$@"
-elif test "$mode" = "in_new_window" || test "$mode" = ""; then
+elif test "$mode" = "in-new-window" || test "$mode" = ""; then
     refresh_kak_or run_kak_in_new_window
 elif test "$mode" = "private_capture_pane"; then
     private_capture_pane "$@"
@@ -289,9 +289,9 @@ elif test "$mode" = "private_in_new_window_callback"; then
 else
     printf "%s\n" "usage:"
     printf "%s\n" ""
-    printf "%s\n" "tmux_kak_copy_mode"
-    printf "%s\n" "tmux_kak_copy_mode in_new_window"
+    printf "%s\n" "tmux-kak-copy-mode"
+    printf "%s\n" "tmux-kak-copy-mode in-new-window"
     printf "%s\n" ""
-    printf "%s\n" "tmux_kak_copy_mode here"
-    printf "%s\n" "tmux_kak_copy_mode here -t <some_pane_id>"
+    printf "%s\n" "tmux-kak-copy-mode here"
+    printf "%s\n" "tmux-kak-copy-mode here -t <some_pane_id>"
 fi

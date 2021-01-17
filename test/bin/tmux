@@ -2,7 +2,7 @@
 
 # A tmux wrapper that uses test specific tmux configuration and socket files.
 # A wrapper binary is preferrable to a bash function or an alias in tests because a wrapper binary affects also
-# the tmux binary used by tmux_kak_copy_mode.
+# the tmux binary used by tmux-kak-copy-mode.
 
 # See test/lib/prelude.sh
 test_root="$TMUX_KAK_COPY_MODE_TEST_ROOT"

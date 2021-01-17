@@ -12,7 +12,7 @@ tmux display-message -p "#{window_zoomed_flag}" >beginning.window_zoomed_flag.tx
 >beginning.window_zoomed_flag.txt.expected echo "1"
 
 tmux send-keys -t "=$test_session:0.0" 'echo Hello world' Enter
-tmux send-keys -t "=$test_session:0.0" 'tmux_kak_copy_mode in_new_window' Enter
+tmux send-keys -t "=$test_session:0.0" 'tmux-kak-copy-mode in-new-window' Enter
 test_sleep_for_tmux
 tmux send-keys -t "=$test_session:0.0" ':execute-keys %(%sworld<ret>cthere<esc>)' Enter
 tmux send-keys -t "=$test_session:0.0" 'gk' Enter
@@ -26,7 +26,7 @@ tmux capture-pane -t "=$test_session:0.0" -p -E8 >pane.txt
 >pane.txt.expected echo \
 "$ echo Hello world
 Hello world
-$ tmux_kak_copy_mode in_new_window
+$ tmux-kak-copy-mode in-new-window
 $
 
 
