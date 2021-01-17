@@ -8,25 +8,28 @@ to view the content of panes
 of the terminal multiplexer [tmux](https://github.com/tmux/tmux).
 The script aims to replace tmux copy-mode in a way that Kakoune users may appreciate.
 
-### Benefits
+## Example
+
+Suppose we have a tmux session with two panes: one pane for Kakoune and another for a shell.
+![screenshot 1](docs/1.png)
+
+Using tmux-kak-copy-mode, we can open the shell pane contents in a Kakoune client!
+We can for example navigate and yank text using Kakoune movement keys.
+![screenshot 2](docs/2.png)
+
+The new client is connected to the same Kakoune session as the other one.
+Therefore, the Kakoune register contents we yanked can be pasted to the other Kakoune client.
+![screenshot 3](docs/3.png)
+
+## Benefits
 
 - You can use **Kakoune key mappings** when viewing tmux pane contents.
+  Importantly, you can do so even if your mappings are customized.
 
-- You can use **Kakoune registers** to yank text from tmux panes.
-  This works because tmux-kak-copy-mode connects to an existing Kakoune session
-  associated with the appropriate tmux session if there is any.
-  Thus, whereas before you might try to operate with Kakoune and tmux
-  by using tmux paste buffers and configuring Kakoune to work with them,
-  now you may choose to use any Kakoune registers for the same task.
-
-- You can optionally add lines to the pane content in Kakoune
-  and those lines will be **sent back as key strokes to the pane** once
-  you close the Kakoune client.
-  This way you can easily write commands in Kakoune to be executed in a
-  shell, or whichever program you are running the tmux pane.
-
-TODO:
-![screenshot](docs/screenshot.png)
+- You can use **Kakoune registers** in addition to tmux paste buffers
+  to yank text from tmux panes.
+  This works well because tmux-kak-copy-mode connects to any existing
+  Kakoune session within the current tmux session.
 
 ## Dependencies
 
@@ -37,12 +40,12 @@ TODO:
 - [kak-ansi](https://github.com/eraserhd/kak-ansi),
   which can be installed for example with the Kakoune plugin manager
   [plug](https://github.com/andreyorst/plug.kak).
-  This is used for rendering ANSI-colored text in Kakoune.
+  This plugin is used for rendering ANSI-colored text in Kakoune.
 
 - [tmux-kak-info.kak](https://github.com/jbomanson/tmux-kak-info.kak),
   which can also be installed with
   [plug](https://github.com/andreyorst/plug.kak).
-  This is used for determining which Kakoune session to connect to.
+  This plugin is used for determining which Kakoune session to connect to.
 
 ## Installation
 
@@ -69,13 +72,13 @@ Add a tmux key binding to start tmux-kak-copy-mode in response to a key combinat
 adding a line such as the following to your `~/.tmux.conf`:
 
 ```tmux
-bind-key i run-shell tmux-kak-copy-mode
+bind-key [ run-shell tmux-kak-copy-mode
 ```
 
 Then run `tmux source-file ~/.tmux.conf` or restart tmux.
-Afterward, the key sequence `Ctrl+B i` should launch tmux-kak-copy-mode.
+Afterward, the key sequence `Ctrl+B [` will launch tmux-kak-copy-mode assuming `Ctrl+B` is your tmux leader key.
 
-## Optional: Configure Kakoune
+### Optional: Configure Kakoune
 
 You may configure the behaviour of Kakoune when Kakoune is used for
 tmux-kak-copy-mode by adding a hook for the file type `tmux-kak-copy-mode`
@@ -91,18 +94,10 @@ hook global WinSetOption filetype=tmux-kak-copy-mode %{
 }
 ```
 
-## Usage
-
-When in tmux, press your chosen keybinding and, if everything goes smoothly,
-the pane in front of you should turn into a kakoune window showing the contents
-that were in the pane.
-
-Once done, quit kakoune with `:q`, for example.
-
 ## Caveats
 
 The `tmux-kak-copy-mode in_new_pane` call works by creating a new temporary tmux
-pane, opening kakoune in it, and temporarily swapping that new pane with
+pane, opening Kakoune in it, and temporarily swapping that new pane with
 whatever pane used to be active.
 Ideally, the old pane would be hidden for the duration of the process, but this
 is not done in the current implementation.
