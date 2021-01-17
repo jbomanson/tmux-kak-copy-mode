@@ -3,7 +3,7 @@
 source "${0%/*}/../lib/prelude.sh"
 
 tmux send-keys -t "=$test_session:0.0" 'seq 1 100' Enter
-tmux run-shell -t "=$test_session:0.0" tmux-kak-copy-mode
+tmux run-shell -t "=$test_session:0.0" "$(command -v tmux-kak-copy-mode)"
 test_sleep_for_tmux
 tmux send-keys -t "=$test_session:0.0" 'cCURSOR' Escape Enter
 
