@@ -47,13 +47,13 @@ test/window_zoomed_flag_during_quit.sh: empty
 test/window_zoomed_flag_quit.sh: empty
 test/window_zoomed_flag_twice_quit.sh: empty
 test_summary:
-  size: { lines: 304, words: 737, bytes: 9435 }
+  size: { lines: 304, words: 737, bytes: 9342 }
   first: ''
   last: 21 examples, 3 failures
-  hash: 606523a961088166a53dc3283ec3cdc1add368b5
+  hash: 99c2108b864bc888b204ec45daee3d30e5b70adf
 test_summary.stderr: empty
 teog:
-  input: b2d891db282ac611966427e2dd5f692bfe430bbf
+  input: 7b89da66194634d9a0fff9e2e225b819d1ec4dbd
   status: 0
-  total: 0b4e0320cc211adff96feff295ade77c28d80150
+  total: 971af2adb8c3a9ef004466f59f7abccd7acbf2f3
   version: 8

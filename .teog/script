@@ -10,7 +10,8 @@ function run ()
 function test_summary ()
 {
     mkdir -p test
-    test/test --output_format="$output_dir/test/%s"
+    test/test --output_format="$output_dir/test/%s" |
+        sed "s,$output_dir,\$output_dir,g"
 }
 run test_summary
 
