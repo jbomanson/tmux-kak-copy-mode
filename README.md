@@ -6,31 +6,24 @@
 [Kakoune](https://github.com/mawww/kakoune)
 to view the content of panes
 of the terminal multiplexer [tmux](https://github.com/tmux/tmux).
-The script aims to replace the functionality of the tmux copy-mode
-in a way that Kakoune users should appreciate.
+The script aims to replace tmux copy-mode in a way that Kakoune users may appreciate.
 
 ### Benefits
 
-- Fans of Kakoune who wish to use Kakoune key mappings can use
-    Kakoune itself in place of tmux copy-mode instead of trying to
-    configure tmux copy-mode to work more like Kakoune.
+- You can use **Kakoune key mappings** when viewing tmux pane contents.
 
-- **Kakoune registers are shared** between the Kakoune client used for
-    tmux_kak_copy_mode and any* Kakoune clients in the same tmux
-    session.
-    Thus, whereas otherwise one might try to operate with Kakoune and tmux
-    by using tmux paste buffers and configuring Kakoune to work with them,
-    now you may simply use Kakoune registers for a lot of things.
-    (*) = Assuming there are clients of only one Kakoune session within
-    this tmux session.
-    In the presence of many Kakoune sessions, the registers will be shared with
-    the clients of one of the Kakoune sessions.
+- You can use **Kakoune registers** to yank text from tmux panes.
+  This works because tmux_kak_copy_mode connects to an existing Kakoune session
+  associated with the appropriate tmux session if there is any.
+  Thus, whereas before you might try to operate with Kakoune and tmux
+  by using tmux paste buffers and configuring Kakoune to work with them,
+  now you may choose to use any Kakoune registers for the same task.
 
 - You can optionally add lines to the pane content in Kakoune
-    and those **lines will be sent as key strokes to the pane** once
-    the Kakoune client is closed.
-    This way you can easily write commands to be executed in their
-    shell, or whichever program you are running the tmux pane.
+  and those lines will be **sent back as key strokes to the pane** once
+  you close the Kakoune client.
+  This way you can easily write commands in Kakoune to be executed in a
+  shell, or whichever program you are running the tmux pane.
 
 TODO:
 ![screenshot](docs/screenshot.png)
@@ -72,7 +65,7 @@ env PREFIX="$HOME/.local" make install
 
 ### Recommended: Configure tmux
 
-Add a tmux key binding to start tmux_kak_copy_mode in response to a key press by
+Add a tmux key binding to start tmux_kak_copy_mode in response to a key combination by
 adding a line such as the following to your `~/.tmux.conf`:
 
 ```tmux
