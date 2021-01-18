@@ -2,25 +2,30 @@
 
 [![License](https://img.shields.io/github/license/jbomanson/tmux-kak-copy-mode)](https://opensource.org/licenses/Apache-2.0)
 
-**tmux-kak-copy-mode** is a script that allows to use the terminal code editor
+**tmux-kak-copy-mode** is a tool that helps use the terminal code editor
 [Kakoune](https://github.com/mawww/kakoune)
 to view the content of panes
 of the terminal multiplexer [tmux](https://github.com/tmux/tmux).
-The script aims to replace tmux copy-mode in a way that Kakoune users may appreciate.
+In other words, tmux-kak-copy-mode aims to replace the regular tmux copy mode in a way that
+Kakoune users may appreciate.
 
 ## Example
 
-Suppose we have a tmux session with two panes: one pane for Kakoune and another for a shell.
+Suppose we have a tmux session with two panes: one for Kakoune and another for a shell:
 
 ![screenshot 1](https://user-images.githubusercontent.com/11866614/104899419-7e54b300-5983-11eb-9459-38e5003fc07d.png)
 
-Using tmux-kak-copy-mode, we can open the shell pane contents in a Kakoune client!
-We can for example navigate and yank text using Kakoune movement keys.
+By calling tmux-kak-copy-mode, we can open the shell pane contents in a Kakoune client!
+This can be done using a [tmux keybinding](#configuring-a-tmux-keybinding).
+Then we can for example navigate and yank text using Kakoune movement keys.
+Notice how the bottom pane in the following screenshot has temporarily turned into a Kakoune client:
 
 ![screenshot 2](https://user-images.githubusercontent.com/11866614/104899431-814fa380-5983-11eb-9890-9e4779665ac5.png)
 
-The new client is connected to the same Kakoune session as the other one.
-Therefore, the Kakoune register contents we yanked can be pasted to the other Kakoune client.
+The new client is connected to the same Kakoune session as the earlier one.
+Therefore, the Kakoune register contents we yanked can be pasted to that earlier Kakoune client.
+Once we quit the new kakoune client, the original shell pane switches back to its place:
+
 ![screenshot 3](https://user-images.githubusercontent.com/11866614/104899440-83b1fd80-5983-11eb-846c-d714e3fe5b5f.png)
 
 ## Benefits
@@ -35,7 +40,7 @@ Therefore, the Kakoune register contents we yanked can be pasted to the other Ka
 
 ## Dependencies
 
-- [Kakoune)(https://github.com/mawww/kakoune)
+- [Kakoune](https://github.com/mawww/kakoune)
 
 - [tmux](https://github.com/tmux/tmux)
 
@@ -51,24 +56,29 @@ Therefore, the Kakoune register contents we yanked can be pasted to the other Ka
 
 ## Installation
 
-### tmux-kak-copy-mode
+### Installing the tmux-kak-copy-mode Binary
 
 Once the above dependencies are installed, copy the executable
-`bin/tmux-kak-copy-mode` included in this repository to any directory on your
-PATH either manually, or let the included `Makefile`
-do that.
+`bin/tmux-kak-copy-mode` from this repository to some directory on your
+PATH either manually or by running `make`.
 
 For example, to install to /usr/local/bin:
 ```sh
-make install
+$ make install
 ```
 
 Alternatively, to install to `$HOME/.local/bin` for example:
 ```sh
-env PREFIX="$HOME/.local" make install
+$ env PREFIX="$HOME/.local" make install
 ```
 
-### Recommended: Configure tmux
+To test tmux-kak-copy-mode, you can run it directly from the shell:
+```
+$ tmux-kak-copy-mode
+```
+If everything is all right, Kakoune will open up and you may close it to get back to the shell.
+
+### Configuring a tmux Keybinding
 
 Add a tmux key binding to start tmux-kak-copy-mode in response to a key combination by
 adding a line such as the following to your `~/.tmux.conf`:
@@ -80,7 +90,7 @@ bind-key [ run-shell tmux-kak-copy-mode
 Then run `tmux source-file ~/.tmux.conf` or restart tmux.
 Afterward, the key sequence `Ctrl+B [` will launch tmux-kak-copy-mode assuming `Ctrl+B` is your tmux leader key.
 
-### Optional: Configure Kakoune
+### Optional: Configuring Kakoune
 
 You may configure the behaviour of Kakoune when Kakoune is used for
 tmux-kak-copy-mode by adding a hook for the file type `tmux-kak-copy-mode`
@@ -98,8 +108,8 @@ hook global WinSetOption filetype=tmux-kak-copy-mode %{
 
 ## Caveats
 
-The `tmux-kak-copy-mode in_new_pane` call works by creating a new temporary tmux
+The `tmux-kak-copy-mode` binary works by creating a new temporary tmux
 pane, opening Kakoune in it, and temporarily swapping that new pane with
-whatever pane used to be active.
-Ideally, the old pane would be hidden for the duration of the process, but this
+the current pane.
+Ideally, the original pane would be hidden for the duration of the process, but this
 is not done in the current implementation.
