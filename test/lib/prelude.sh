@@ -18,9 +18,9 @@ prelude_export ()
 TMUX_KAK_COPY_MODE_TEST_ROOT="$test_root"
 prelude_export TMUX_KAK_COPY_MODE_TEST_ROOT
 
-# Export a copy of the current PATH before modifying it.
-TMUX_KAK_COPY_MODE_TEST_ORIGINAL_PATH="$PATH"
-prelude_export TMUX_KAK_COPY_MODE_TEST_ORIGINAL_PATH
+# Export the path of the tmux executable.
+TMUX_KAK_COPY_MODE_TEST_TMUX_EXECUTABLE="$(command -v tmux)"
+prelude_export TMUX_KAK_COPY_MODE_TEST_TMUX_EXECUTABLE
 
 # Set up a home directory specific to this test.
 HOME="$test_root/home"

@@ -6,12 +6,12 @@ help:
   hash: 8aa08d9f0ef2e5b5ad9a4330543b4c586f99acee
 help.stderr: empty
 lint_shell:
-  size: { lines: 51, words: 610, bytes: 5904 }
+  size: { lines: 51, words: 610, bytes: 5906 }
   first: ".teog/script:7:10: note: Make sure not to read and write the same file in
     the same pipeline. [SC2094]"
   last: "./test/lib/prelude.sh:94:87: note: Double quote to prevent globbing and word
     splitting. [SC2086]"
-  hash: 5f0d8d50877ce905ef18bfe8841076b4f545ec85
+  hash: 8805f377037973832e75cacd459afc4317fd5663
 lint_shell.stderr: empty
 test/command-tmux-kak-copy-mode.sh: empty
 test/cursor-full.sh:
@@ -53,7 +53,7 @@ test_summary:
   hash: bf2f03f9490fa670501c521ee6b48e5b31562dc2
 test_summary.stderr: empty
 teog:
-  input: 80fab57fd50fef67f9cab9d411e6d4261f5de813
+  input: 7129fd327b64e1c332111a6d75f57157af69c52b
   status: 0
-  total: a0897d69f21439faac4a239939c46e203ae1de6e
+  total: 804b61a5b362f1874c25661c35e2c189c5a6a3b0
   version: 8

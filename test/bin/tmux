@@ -6,6 +6,5 @@
 
 # See test/lib/prelude.sh
 test_root="$TMUX_KAK_COPY_MODE_TEST_ROOT"
-PATH="$TMUX_KAK_COPY_MODE_TEST_ORIGINAL_PATH"
 touch "$test_root/.tmux.conf"
-exec tmux -f "$test_root/.tmux.conf" -S "$test_root/.tmux-socket" "$@"
+exec "$TMUX_KAK_COPY_MODE_TEST_TMUX_EXECUTABLE" -f "$test_root/.tmux.conf" -S "$test_root/.tmux-socket" "$@"
