@@ -11,15 +11,17 @@ The script aims to replace tmux copy-mode in a way that Kakoune users may apprec
 ## Example
 
 Suppose we have a tmux session with two panes: one pane for Kakoune and another for a shell.
-![screenshot 1](docs/1.png)
+
+![screenshot 1](https://user-images.githubusercontent.com/11866614/104899419-7e54b300-5983-11eb-9459-38e5003fc07d.png)
 
 Using tmux-kak-copy-mode, we can open the shell pane contents in a Kakoune client!
 We can for example navigate and yank text using Kakoune movement keys.
-![screenshot 2](docs/2.png)
+
+![screenshot 2](https://user-images.githubusercontent.com/11866614/104899431-814fa380-5983-11eb-9890-9e4779665ac5.png)
 
 The new client is connected to the same Kakoune session as the other one.
 Therefore, the Kakoune register contents we yanked can be pasted to the other Kakoune client.
-![screenshot 3](docs/3.png)
+![screenshot 3](https://user-images.githubusercontent.com/11866614/104899440-83b1fd80-5983-11eb-846c-d714e3fe5b5f.png)
 
 ## Benefits
 
