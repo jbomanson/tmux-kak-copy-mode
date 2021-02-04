@@ -1,33 +1,3 @@
-#! /bin/bash
+#! /bin/sh
 
-output_dir="$PWD"
-
-function run ()
-{
-    eval "$1" >"$1" 2>"$1.stderr" </dev/null &
-}
-
-function test_summary ()
-{
-    mkdir -p test
-    test/test --output_format="$output_dir/test/%s" |
-        sed "s,$output_dir,\$output_dir,g"
-}
-run test_summary
-
-function help ()
-{
-    bin/tmux-kak-copy-mode --help
-}
-run help
-
-function lint_shell ()
-{
-    (
-        echo ".teog/script"
-        exec find . -type f -name "*.sh"
-    ) | sort | xargs shellcheck --format=gcc
-}
-run lint_shell
-
-wait
+exec "${0%/*}/../regression_test" "$@"

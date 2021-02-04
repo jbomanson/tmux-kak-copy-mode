@@ -1,0 +1,42 @@
+#! /bin/sh
+
+if test $# -ne 1; then
+    echo "usage: ${0##*/} <output_dir>"
+    exit 1
+fi >&2
+
+output_dir="$1"
+test "${output_dir#/}" = "$output_dir" && output_dir="$PWD/${output_dir#/}"
+mkdir -p "$output_dir"
+
+cd "${0%/*}" || exit 1
+
+run ()
+{
+    eval "$1" >"$output_dir/$1" 2>"$output_dir/$1.stderr" </dev/null &
+}
+
+test_summary ()
+{
+    mkdir -p "$output_dir/test"
+    test/test --output_format="$output_dir/test/%s" |
+        sed "s,$output_dir,\$output_dir,g"
+}
+run test_summary
+
+help ()
+{
+    bin/tmux-kak-copy-mode --help
+}
+run help
+
+lint_shell ()
+{
+    (
+        echo ".teog/script"
+        exec find . -type f -name "*.sh"
+    ) | sort | xargs shellcheck --format=gcc
+}
+run lint_shell
+
+wait
