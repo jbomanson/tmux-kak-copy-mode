@@ -46,12 +46,12 @@ Once we quit the new kakoune client, the original shell pane switches back to it
 
 - [kak-ansi](https://github.com/eraserhd/kak-ansi),
   which can be installed for example with the Kakoune plugin manager
-  [plug](https://github.com/andreyorst/plug.kak).
+  [plug](https://github.com/robertmeta/plug.kak).
   This plugin is used for rendering ANSI-colored text in Kakoune.
 
 - [tmux-kak-info.kak](https://github.com/jbomanson/tmux-kak-info.kak),
   which can also be installed with
-  [plug](https://github.com/andreyorst/plug.kak).
+  [plug](https://github.com/robertmeta/plug.kak).
   This plugin is used for determining which Kakoune session to connect to.
 
 ## Installation
