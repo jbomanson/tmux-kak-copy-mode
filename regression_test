@@ -1,5 +1,10 @@
 #! /bin/sh
 
+stabilize ()
+{
+    sed "s,$output_dir,\$output_dir,g; s,$PWD,\$PWD,g"
+}
+
 if test $# -ne 1; then
     echo "usage: ${0##*/} <output_dir>"
     exit 1
@@ -19,8 +24,7 @@ run ()
 test_summary ()
 {
     mkdir -p "$output_dir/test"
-    test/test --output_format="$output_dir/test/%s" |
-        sed "s,$output_dir,\$output_dir,g"
+    test/test --output_format="$output_dir/test/%s"
 }
 run test_summary
 
@@ -40,3 +44,15 @@ lint_shell ()
 run lint_shell
 
 wait
+
+# Stabilize and prune outputs.
+find "$output_dir" -type f |
+    while read -r file
+    do
+        if test -s "$file"; then
+            stabilize <"$file" >"$file.tmp"
+            mv "$file.tmp" "$file"
+        elif test "${file%.stderr}" != "$file"; then
+            rm "$file"
+        fi
+    done

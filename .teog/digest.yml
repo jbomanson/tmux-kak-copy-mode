@@ -4,7 +4,6 @@ help:
   first: 'usage:'
   last: tmux-kak-copy-mode here -t <some_pane_id>
   hash: 8aa08d9f0ef2e5b5ad9a4330543b4c586f99acee
-help.stderr: empty
 lint_shell:
   size: { lines: 49, words: 576, bytes: 5702 }
   first: "./test/case/command-tmux-kak-copy-mode.sh:3:8: warning: Can't follow non-constant
@@ -12,7 +11,6 @@ lint_shell:
   last: "./test/lib/prelude.sh:94:87: note: Double quote to prevent globbing and word
     splitting. [SC2086]"
   hash: d1c96dafbb9c0cedda3cc920add7b12bbdaa4169
-lint_shell.stderr: empty
 test/command-tmux-kak-copy-mode.sh: empty
 test/cursor-full.sh:
   size: { lines: 17, words: 32, bytes: 210 }
@@ -47,13 +45,12 @@ test/window-zoomed-flag-quit.sh: empty
 test/window-zoomed-flag-twice-quit.sh: empty
 test/window-zoomed-flag.sh: empty
 test_summary:
-  size: { lines: 304, words: 737, bytes: 9432 }
+  size: { lines: 304, words: 737, bytes: 9321 }
   first: ''
   last: 21 examples, 3 failures
-  hash: 775ca2227aaf47416a8cea4f27ef1051077394ca
-test_summary.stderr: empty
+  hash: 928e134c265c79e7a458ba344ea186fd05812565
 teog:
-  input: c50db2ce270c11599bb99f10b082533625199e67
+  input: 93eecc739befa22d7d2771516f76aae4ed325b1d
   status: 0
-  total: 49e1c807ea1c7f8a19a9550fa75a9c2dd17699a0
+  total: 436c0c6a15e386dad1c6e18db6a534fb4290622f
   version: 9
