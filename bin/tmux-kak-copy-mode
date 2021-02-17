@@ -46,7 +46,7 @@ tmux_kak_session ()
     {
         tmux show-option -vw @kak_info_sessions
         tmux show-option -v  @kak_info_sessions
-    } | grep -F "$(kak -l)" | head -n1
+    } | grep -F -m 1 "$(kak -l)"
 }
 
 gather_information ()
