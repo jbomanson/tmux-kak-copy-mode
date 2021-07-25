@@ -21,6 +21,12 @@ run ()
     eval "$1" >"$output_dir/$1" 2>"$output_dir/$1.stderr" </dev/null &
 }
 
+tmux_version ()
+{
+    tmux -V
+}
+run tmux_version
+
 test_summary ()
 {
     mkdir -p "$output_dir/test"
